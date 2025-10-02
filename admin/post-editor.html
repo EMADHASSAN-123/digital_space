@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>محرر التدوينات</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsmind@0.5.0/style/jsmind.css" />
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsmind@0.5.0/es6/jsmind.js"></script>
+
+</head>
+<body class="bg-gray-900 text-white font-sans" dir="rtl">
+ 
+  <main class="max-w-4xl mx-auto p-4 md:p-8">
+    <header class="mb-6">
+      <h1 class="text-2xl font-bold">محرر التدوينات</h1>
+      <p class="text-gray-400 text-sm mt-1">قم بإنشاء أو تعديل التدوينات بسهولة مع اختيار التصنيف والحالة.</p>
+    </header>
+ 
+    <!-- النموذج -->
+    <form id="postForm" class="space-y-4 bg-gray-800 p-6 rounded-lg shadow-lg">
+      <!-- العنوان -->
+      <div>
+        <label for="postTitle" class="block mb-1 font-medium">عنوان التدوينة</label>
+        <input id="postTitle" type="text" placeholder="اكتب عنوان التدوينة"
+          class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+      </div>
+
+      <!-- النبذة -->
+      <div>
+        <label for="postExcerpt" class="block mb-1 font-medium">ملخص التدوينة</label>
+        <input id="postExcerpt" type="text" placeholder="اكتب ملخص قصير عن التدوينة"
+          class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+      </div>
+
+      <!-- التصنيف -->
+      <div>
+        <label for="categorySelect" class="block mb-1 font-medium">التصنيف</label>
+        <select id="categorySelect"
+          class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          <option value="">-- اختر تصنيف --</option>
+          <!-- الخيارات سيتم تحميلها ديناميكيًا -->
+        </select>
+      </div>
+
+      <!-- الحالة -->
+      <div>
+        <label for="postStatus" class="block mb-1 font-medium">الحالة</label>
+        <select id="postStatus"
+          class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          <option value="draft">مسودة</option>
+          <option value="published">منشور</option>
+        </select>
+      </div>
+
+      <!-- المحتوى -->
+      <div>
+        <label for="postContent" class="block mb-1 font-medium">المحتوى</label>
+        <textarea id="postContent" class="w-full rounded bg-gray-700 text-white"></textarea>
+      </div>
+
+      <!-- أزرار الحفظ والإلغاء -->
+      <div class="flex justify-end gap-3">
+        <button type="button" id="cancelBtn"
+          class="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500 text-white shadow-sm">
+          إلغاء
+        </button>
+        <button type="submit"
+          class="px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm">
+          حفظ
+        </button>
+      </div>
+    </form>
+  </main>
+  <!-- مكتبة GSAP -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <!-- TinyMCE self-hosted -->
+  <script src="./assets/vendor/tinymce/js/tinymce/tinymce.min.js"></script>
+
+  <!-- سكربت محرر + التحميل الديناميكي للتصنيفات + حفظ التدوينة -->
+  <script type="module" src="./assets/js/features/post-editor.js"></script>
+
+</body>
+</html>

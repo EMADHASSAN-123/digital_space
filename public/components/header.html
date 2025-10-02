@@ -1,0 +1,51 @@
+<header id="site-header" class="fixed top-0 w-full z-50">
+  <div class="mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8 h-16">
+    <!-- Logo -->
+    <a href="/" class="text-xl">مساحتي</a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex space-x-4 rtl:space-x-reverse">
+      <a href="#">الرئيسية</a>
+      <a href="#">الخدمات</a>
+      <a href="#">المدونة</a>
+      <a href="#">تواصل</a>
+    </nav>
+
+    <!-- Desktop Search -->
+    <div class="relative hidden md:block w-64">
+      <input id="searchInput" type="text" placeholder="ابحث..." />
+      <ul id="searchSuggestions" class="absolute w-full bg-white dark:bg-gray-800 rounded-md shadow-md mt-1 hidden"></ul>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center space-x-2 rtl:space-x-reverse">
+      <button id="theme-toggle" aria-label="تبديل الثيم">🌙</button>
+      <div id="userMenu"></div>
+      <!-- Mobile Menu Button -->
+      <button id="mobileMenuBtn" aria-label="القائمة" aria-controls="mobileNav" aria-expanded="false" class="md:hidden">☰</button>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer -->
+  <div id="mobileNav" class="fixed top-0 right-0 h-full w-64 bg-white dark:bg-gray-900 transform translate-x-full">
+    <div class="p-4 flex justify-between items-center">
+      <span class="font-bold">القائمة</span>
+      <button id="closeMobileNav" aria-label="إغلاق">✕</button>
+    </div>
+
+    <!-- Mobile Search -->
+    <div class="p-4">
+      <input id="mobileSearchInput" type="text" placeholder="ابحث..." class="w-full mb-2" />
+      <ul id="mobileSearchSuggestions" class="bg-white dark:bg-gray-800 rounded-md shadow-md hidden"></ul>
+    </div>
+
+    <!-- Mobile Nav Links -->
+    <nav class="flex flex-col p-4 space-y-2">
+      <a href="#">الرئيسية</a>
+      <a href="#">الخدمات</a>
+      <a href="#">المدونة</a>
+      <a href="#">تواصل</a>
+      <button id="mobileThemeToggle">🌙 تبديل الثيم</button>
+    </nav>
+  </div>
+</header>

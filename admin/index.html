@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>لوحة التحكم</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: "#e9f2f6", 100: "#cfe3ec", 200: "#9bc1d0", 300: "#6fa4ba", 400: "#468ca7", 500: "#2e7d93", 600: "#26667F", 700: "#1f5670", 800: "#1a475d", 900: "#163a4d" },
+            deep: { 50: "#e9eff8", 100: "#cfdcf0", 200: "#a3b9dd", 300: "#7b98c9", 400: "#5377b4", 500: "#355f9f", 600: "#124170", 700: "#0f3860", 800: "#0c2e4f", 900: "#0a263f" },
+            neutral: "#0F172A",
+            surface: { light: "#ffffff", dark: "#0B1220" },
+            muted: "#6B7280",
+            success: "#10B981",
+          },
+          boxShadow: { soft: "0 10px 30px rgba(0,0,0,.08)" },
+          borderRadius: { xl2: "1.25rem" },
+        },
+      },
+    };
+  </script>
+  <script type="module">
+    import { protectAdminPage } from "./assets/js/auth/guards.js";
+    document.addEventListener('DOMContentLoaded', () => { protectAdminPage(true); });
+  </script>
+
+  <!-- مكتبات واجهة -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
+  <style>
+    body {
+      overflow-x: hidden;
+    }
+
+    .icon-transition {
+      transition: transform .18s ease, opacity .18s ease;
+    }
+
+    .show-section.active {
+      background-color: #355f9f;
+      /* لون مميز */
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .show-section.active i {
+      color: #10B981;
+      /* الأخضر لتمييز الأيقونة */
+    }
+  </style>
+</head>
+
+<body id="body" class="min-h-screen font-sans transition-colors duration-300 bg-surface-dark text-surface-light">
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-surface-dark/50 backdrop-blur flex items-center justify-center z-50">
+    <div class="animate-spin rounded-full h-16 w-16 border-4 border-brand-500 border-t-transparent" role="status"
+      aria-hidden="true"></div>
+  </div>
+
+  <!-- Header -->
+      <header id="site-header"></header>
+
+
+  <!-- Main -->
+  <main class="pt-24 pb-10 px-4 max-w-8xl mx-auto my-16">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+      <!-- Sidebar -->
+      <aside id="sidebar"
+        class="col-span-1 bg-deep-800 p-4 rounded-xl2 shadow-soft h-fit lg:sticky top-28 transition-colors">
+        <nav class="flex flex-col gap-3 text-surface-light">
+          <button data-section="dashboard"
+            class="show-section flex items-center gap-2 p-2 rounded transition hover:bg-deep-700">
+            <i data-lucide="home" class="w-5 h-5"></i>
+            <span>الرئيسية</span>
+          </button>
+
+          <button data-section="posts"
+            class="show-section flex items-center gap-2 p-2 rounded transition hover:bg-deep-700">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+            <span>التدوينات</span>
+          </button>
+
+          <button data-section="comments"
+            class="show-section flex items-center gap-2 p-2 rounded transition hover:bg-deep-700">
+            <i data-lucide="message-square" class="w-5 h-5"></i>
+            <span>التعليقات</span>
+            <span class="badge bg-brand-500 text-surface-light px-2 py-0.5 rounded-full text-xs">6</span>
+          </button>
+
+          <button data-section="Category"
+            class="show-section flex items-center gap-2 p-2 rounded transition hover:bg-deep-700">
+            <i data-lucide="folder" class="w-5 h-5"></i>
+            <span>التصنيفات</span>
+          </button>
+
+          <button data-section="users"
+            class="show-section flex items-center gap-2 p-2 rounded transition hover:bg-deep-700">
+            <i data-lucide="users" class="w-5 h-5"></i>
+            <span>المستخدمين</span>
+          </button>
+
+          <button data-section="media"
+            class="show-section flex items-center gap-2 p-2 rounded transition hover:bg-deep-700">
+            <i data-lucide="media" class="w-5 h-5"></i>
+            <span>مكتبة الموارد</span>
+          </button>
+
+
+          <button id="logoutButton" class="flex items-center gap-2 p-2 rounded transition hover:bg-red-600">
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+            <span>تسجيل الخروج</span>
+          </button>
+        </nav>
+
+
+      </aside>
+
+      <!-- Content area -->
+      <section class="col-span-1 lg:col-span-4 space-y-6">
+
+        <!-- Dashboard Section -->
+        <div id="section-dashboard" class="bg-deep-800 rounded-xl2 p-6 shadow-soft">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div
+              class="bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl2 p-4 shadow-soft text-surface-light transition hover:scale-105">
+              <div class="flex justify-between">
+                <div>
+                  <p class="text-sm opacity-90">الزوار</p>
+                  <h3 id="total-visits" class="text-2xl font-bold mt-1">166</h3>
+                </div>
+                <div class="bg-white/20 rounded-lg p-2 h-fit">
+                  <i data-lucide="users" class="w-6 h-6"></i>
+                </div>
+              </div>
+              <div class="mt-4 h-6">
+                <canvas id="visitorsChart" height="80"></canvas>
+              </div>
+              <p class="text-xs mt-2 opacity-80"><span class="text-success">↑ 12%</span> مقارنة بالشهر الماضي</p>
+            </div>
+          </div>
+          <!-- Dashboard Stats -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Visitors -->
+            <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
+              <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                <i data-lucide="users" class="w-6 h-6"></i>
+              </div>
+              <div class="ml-4">
+                <p class="text-gray-600">الزوار</p>
+                <h3 class="text-2xl font-bold">12,345</h3>
+              </div>
+            </div>
+
+            <!-- Posts -->
+            <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
+              <div class="p-3 rounded-full bg-green-100 text-green-600">
+                <i data-lucide="file-text" class="w-6 h-6"></i>
+              </div>
+              <div class="ml-4">
+                <p class="text-gray-600">المشاركات</p>
+                <h3 class="text-2xl font-bold">542</h3>
+              </div>
+            </div>
+
+            <!-- Comments -->
+            <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
+              <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                <i data-lucide="message-square" class="w-6 h-6"></i>
+              </div>
+              <div class="ml-4">
+                <p class="text-gray-600">التعليقات</p>
+                <h3 class="text-2xl font-bold">1,238</h3>
+              </div>
+            </div>
+
+            <!-- Users -->
+            <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
+              <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                <i data-lucide="user-plus" class="w-6 h-6"></i>
+              </div>
+              <div class="ml-4">
+                <p class="text-gray-600">المستخدمين الجدد</p>
+                <h3 class="text-2xl font-bold">87</h3>
+              </div>
+            </div>
+          </div>
+
+          <div id="recentPostsList"></div>
+        </div>
+
+        <!-- Posts Section -->
+        <div id="section-posts" class="hidden bg-deep-800 rounded-xl2 p-6 shadow-soft">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl text-surface-light font-bold">إدارة التدوينات</h2>
+            <div class="flex gap-2">
+              <button id="gridViewBtn" class="p-2 rounded-lg text-surface-light hover:bg-deep-700 transition"><i
+                  data-lucide="grid"></i></button>
+              <button id="listViewBtn" class="p-2 rounded-lg text-muted hover:bg-deep-700 transition"><i
+                  data-lucide="list"></i></button>
+            </div>
+          </div>
+
+          <div class="flex flex-col md:flex-row gap-4 mb-6">
+            <input id="searchInputPosts" type="text" placeholder="ابحث في التدوينات..."
+              class="flex-1 bg-deep-700 text-surface-light rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 transition" />
+            <select id="statusFilter"
+              class="bg-deep-700 text-surface-light rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+              <option value="">كل الحالات</option>
+              <option value="published">منشور</option>
+              <option value="draft">مسودة</option>
+            </select>
+            <button id="newPostBtn"
+              class="bg-brand-500 text-surface-light rounded-lg px-4 py-2 flex items-center hover:bg-brand-600 transition">
+              <i data-lucide="plus" class="w-4 h-4 mr-2"></i> تدوينة جديدة
+            </button>
+          </div>
+
+          <div id="postsContainer" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+          <div id="postsListContainer" class="hidden overflow-x-auto">
+            <table class="w-full text-right">
+              <thead class="bg-deep-700 text-surface-light">
+                <tr>
+                  <th class="px-6 py-3">العنوان</th>
+                  <th class="px-6 py-3">التصنيف</th>
+                   <th class="px-6 py-3">الحالة</th>
+                  <th class="px-6 py-3">التاريخ</th>
+                  <th class="px-6 py-3">المشاهدات</th>
+                  <th class="px-6 py-3">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="postsListBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div id="section-comments" class="hidden bg-deep-800 rounded-xl2 p-6 shadow-soft">
+          <h2 class="text-xl text-surface-light font-bold mb-4">التعليقات</h2>
+          <div class="flex flex-col md:flex-row gap-3 mb-4">
+            <input id="commentsSearchInput" type="text" placeholder="ابحث عن تعليق أو اسم المعلق..."
+              class="flex-1 bg-deep-700 text-surface-light rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+            <select id="commentsStatusFilter"
+              class="bg-deep-700 text-surface-light rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <option value="">كل الحالات</option>
+              <option value="pending">جديد</option>
+              <option value="approved">نشط</option>
+              <option value="hidden">مخفى</option>
+            </select>
+            <select id="commentsPostFilter"
+              class="bg-deep-700 text-surface-light rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <option value="">كل البوستات</option>
+            </select>
+            <button id="commentsRefreshBtn"
+              class="bg-brand-500 text-surface-light rounded-lg px-4 py-2 hover:bg-brand-600 transition">تحديث</button>
+          </div>
+          <div id="commentsTableContainer" class="overflow-x-auto"></div>
+        </div>
+
+        <!-- Category Section -->
+        <div id="section-Category" class="hidden bg-deep-800 rounded-xl2 p-6 shadow-soft">
+          <h2 class="text-xl text-surface-light font-bold mb-4">إدارة الفئات</h2>
+          <div class="flex gap-2 mb-4">
+            <input type="text" placeholder="فئة جديدة"
+              class="flex-1 bg-deep-700 text-surface-light rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+            <button
+              class="bg-brand-500 text-surface-light px-4 py-2 rounded-lg hover:bg-brand-600 transition">إضافة</button>
+          </div>
+          <ul id="categoriesList" class="flex flex-col gap-2"></ul>
+        </div>
+
+        <!-- Media / Resources Section -->
+        <div id="section-media" class="hidden bg-deep-800 rounded-xl2 p-6 shadow-soft">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl text-surface-light font-bold flex items-center gap-2">
+              <i data-lucide="library" class="w-6 h-6"></i> مكتبة الموارد
+            </h2>
+            <button id="newResourceBtn"
+              class="bg-brand-500 text-surface-light rounded-lg px-4 py-2 flex items-center gap-2 hover:bg-brand-600 transition">
+              <i data-lucide="plus" class="w-4 h-4"></i> مورد جديد
+            </button>
+          </div>
+
+
+          <!-- Resource Form (hidden by default) -->
+          <div id="resourceFormContainer" class="hidden bg-deep-700 rounded-xl2 p-4 mb-6">
+            <h3 class="text-lg text-surface-light font-bold mb-4">إضافة مورد</h3>
+            <form id="resourceForm" class="flex flex-col gap-4">
+
+              <!-- Title -->
+              <div>
+                <label class="block text-surface-light mb-1">عنوان المورد *</label>
+                <input type="text" id="resourceTitle"
+                  class="w-full bg-deep-800 text-surface-light rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-500"
+                  required />
+              </div>
+
+              <!-- Type -->
+              <div>
+                <label class="block text-surface-light mb-1">نوع المورد *</label>
+                <select id="resourceType"
+                  class="w-full bg-deep-800 text-surface-light rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-500">
+                  <option value="file">ملف</option>
+                  <option value="link">رابط</option>
+                </select>
+              </div>
+
+              <!-- File Upload -->
+              <div id="fileUploadField" class="hidden">
+                <label class="block text-surface-light mb-1">رفع ملف</label>
+                <input type="file" id="resourceFile"
+                  class="w-full bg-deep-800 text-surface-light rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-500" />
+                <p class="text-xs text-gray-400 mt-1">الملفات المسموح بها: PDF, DOCX, PPTX, ZIP — بحد أقصى 5MB</p>
+              </div>
+
+              <!-- URL Field -->
+              <div id="urlField" class="hidden">
+                <label class="block text-surface-light mb-1">رابط المورد</label>
+                <input type="url" id="resourceUrl"
+                  class="w-full bg-deep-800 text-surface-light rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-500" />
+              </div>
+
+              <!-- Description -->
+              <div>
+                <label class="block text-surface-light mb-1">الوصف</label>
+                <textarea id="resourceDescription" rows="3"
+                  class="w-full bg-deep-800 text-surface-light rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-500"></textarea>
+              </div>
+
+              <!-- Category -->
+              <div>
+                <label class="block text-surface-light mb-1">التصنيف</label>
+                <select id="resourceCategory"
+                  class="w-full bg-deep-800 text-surface-light rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-500">
+                  <option value="">اختر التصنيف</option>
+                </select>
+              </div>
+
+              <!-- Status -->
+              <div>
+                <label class="block text-surface-light mb-1">الحالة</label>
+                <select id="resourceStatus"
+                  class="w-full bg-deep-800 text-surface-light rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-500">
+                  <option value="published">منشور</option>
+                  <option value="draft">مسودة</option>
+                </select>
+              </div>
+
+              <!-- Actions -->
+              <div class="flex justify-end gap-2">
+                <button type="button" id="cancelResourceBtn"
+                  class="px-4 py-2 rounded-lg bg-gray-600 text-surface-light hover:bg-gray-700 transition">إلغاء</button>
+                <button type="submit"
+                  class="px-4 py-2 rounded-lg bg-brand-500 text-surface-light hover:bg-brand-600 transition">حفظ</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Resource List -->
+          <div>
+            <div class="flex justify-between items-center mb-3">
+              <input id="searchResources" type="text" placeholder="ابحث عن مورد..."
+                class="bg-deep-700 text-surface-light rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-500 flex-1" />
+            </div>
+            <div id="resourcesList" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <!-- الموارد ستظهر هنا -->
+            </div>
+          </div>
+
+
+        </div>
+
+
+        <!-- Users Section -->
+        <div id="section-users" class="hidden bg-deep-800 rounded-xl2 p-6 shadow-soft">
+          <h2 class="text-xl text-surface-light font-bold mb-4">المستخدمين</h2>
+          <div id="usersList" class="flex flex-col gap-3"></div>
+        </div>
+
+        <!-- Stats Section -->
+        <div id="section-stats" class="hidden bg-deep-800 rounded-xl2 p-6 shadow-soft">
+          <h2 class="text-xl text-surface-light font-bold mb-4">إحصائيات</h2>
+          <canvas id="statsChart" class="rounded-xl2 bg-deep-700 p-4"></canvas>
+        </div>
+
+        <!-- Notifications Section -->
+        <div id="section-notifications" class="hidden bg-deep-800 rounded-xl2 p-6 shadow-soft">
+          <h2 class="text-xl text-surface-light font-bold mb-4">الإشعارات</h2>
+          <ul id="notificationsList" class="flex flex-col gap-2 text-surface-light"></ul>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="section-settings" class="hidden bg-deep-800 rounded-xl2 p-6 shadow-soft">
+          <h2 class="text-xl text-surface-light font-bold mb-4">إعدادات</h2>
+          <div class="flex flex-col gap-4">
+            <div class="flex justify-between items-center">
+              <span class="text-surface-light">تفعيل الوضع المظلم</span>
+              <input type="checkbox" id="darkModeToggle" class="w-6 h-6 accent-brand-500" />
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-surface-light">تمكين الإشعارات</span>
+              <input type="checkbox" id="notificationsToggle" class="w-6 h-6 accent-brand-500" />
+            </div>
+          </div>
+        </div>
+ 
+      </section>
+    </div>
+  </main>
+
+  <footer class="bg-surface-dark text-muted text-center py-4 mt-6">
+    <p class="text-sm">© 2025 لوحة التحكم. جميع الحقوق محفوظة.</p>
+  </footer>
+
+  <!-- Modals & Toast -->
+  <div id="postEditorModal" class="fixed inset-0 z-50 hidden overflow-y-auto"></div>
+  <div id="modalRoot"></div>
+  <div id="toastRoot" aria-live="polite" aria-atomic="true"></div>
+  
+  <script type="module">
+        import { Header } from '../public/assets/js/header.js';
+        document.addEventListener('DOMContentLoaded', () => { Header.init(); });
+  </script>
+
+  
+
+  <!-- Scripts -->
+  <script type="module" src="./assets/js/app.js"></script>
+  <script>
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (mobileMenuButton) {
+      mobileMenuButton.addEventListener('click', () => {
+        if (!mobileMenu) return;
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.AOS) AOS.init({ duration: 600, easing: 'ease-in-out', once: true });
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    });
+  </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "dependency-cruiser": "^17.0.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.13"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "gsap": "^3.13.0"
+  }
+}

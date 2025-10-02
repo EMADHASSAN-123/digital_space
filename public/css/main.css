@@ -1,0 +1,59 @@
+/* نص الهيرو animate */
+.hero-title, .hero-sub {
+  opacity: 0; 
+  transform: translateY(20px);
+  animation: fadeInUp 0.9s forwards;
+}
+.hero-title { animation-delay: 0.15s; }
+.hero-sub { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* dotlottie sizing */
+dotlottie-wc {
+  width: clamp(100px, 15vw, 200px);
+  height: clamp(120px, 20vw, 240px);
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+dotlottie-wc:hover { transform: translateY(-8px) scale(1.03); }
+
+/* Hamburger spans style + animation to X */
+#hamburger span {
+  display: block;
+  background-color: #d0b16b;
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+  transform-origin: center;
+}
+
+/* active state transforms into X */
+#hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(3px, 3px);
+}
+#hamburger.active span:nth-child(2) {
+  opacity: 0;
+  transform: translateX(-8px);
+}
+#hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(3px, -3px);
+}
+
+/* Mobile menu minor styling to align center */
+#mobile-menu {
+  flex-direction: column;
+  align-items: center;
+  padding-top: 5rem;
+}
+
+/* floating animation helpers (subtle) */
+@keyframes float-slow { from { transform: translateY(0); } to { transform: translateY(-8px); } }
+@keyframes float-medium { from { transform: translateY(0); } to { transform: translateY(-12px); } }
+@keyframes float-fast { from { transform: translateY(0); } to { transform: translateY(-16px); } }
+.animate-float-slow { animation: float-slow 6s ease-in-out infinite alternate; }
+.animate-float-medium { animation: float-medium 5s ease-in-out infinite alternate; }
+.animate-float-fast { animation: float-fast 4s ease-in-out infinite alternate; }

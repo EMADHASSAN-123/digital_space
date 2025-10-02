@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- الصفحة الرئيسية -->
+  <url>
+    <loc>https://yourwebsite.com/index.html</loc>
+    <lastmod>2025-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- قسم الفئات على الصفحة الرئيسية -->
+  <url>
+    <loc>https://yourwebsite.com/index.html#categories-bar</loc>
+    <lastmod>2025-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- صفحة عرض البوست -->
+  <url>
+    <loc>https://yourwebsite.com/public/page/post.html</loc>
+    <lastmod>2025-10-02</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- صفحة المكتبة -->
+  <url>
+    <loc>https://yourwebsite.com/public/page/resources.html</loc>
+    <lastmod>2025-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- صفحة الملف الشخصي -->
+  <url>
+    <loc>https://yourwebsite.com/public/page/profile.html</loc>
+    <lastmod>2025-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- صفحة تسجيل الدخول -->
+  <url>
+    <loc>https://yourwebsite.com/public/page/login.html</loc>
+    <lastmod>2025-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- صفحة إنشاء حساب -->
+  <url>
+    <loc>https://yourwebsite.com/public/page/signup.html</loc>
+    <lastmod>2025-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- صفحة الإدارة (عادة محجوبة عن محركات البحث) -->
+  <url>
+    <loc>https://yourwebsite.com/admin/index.html</loc>
+    <lastmod>2025-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+</urlset>

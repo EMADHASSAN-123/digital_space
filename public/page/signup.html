@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إنشاء حساب - لوحة الإدارة</title>
+  <!-- <link rel="stylesheet" href="./assets/css/main.css"> -->
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #161616, #d0b16b);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+    }
+    .signup-container {
+      background: rgba(0,0,0,0.85);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .signup-container h1 {
+      margin-bottom: 1.5rem;
+      color: #d0b16b;
+    }
+    .signup-container input {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+    }
+    .signup-container button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: #d0b16b;
+      color: #161616;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .signup-container button:hover {
+      background-color: #bfa35c;
+    }
+    .signup-container p {
+      margin-top: 1rem;
+    }
+    .signup-container a {
+      color: #d0b16b;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-container">
+    <h1>إنشاء حساب جديد</h1>
+    
+    <input type="email" id="email" placeholder="البريد الإلكتروني">
+    <input type="password" id="password" placeholder="كلمة المرور">
+    <button id="signup-email">تسجيل</button>
+
+    <p id="signup-message" style="margin-top:1rem;color:#f77;"></p>
+
+    <p>لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a></p>
+  </div>
+
+<script type="module">
+  import { supabase } from '../admin/assets/js/supabaseClient.js';
+
+  const signupEmailBtn = document.getElementById('signup-email');
+  const signupMessage = document.getElementById('signup-message');
+
+  signupEmailBtn.addEventListener('click', async () => {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (!email || !password) {
+      signupMessage.textContent = "يرجى إدخال البريد وكلمة المرور";
+      return;
+    }
+
+    // تسجيل المستخدم الجديد
+    const { data, error } = await supabase.auth.signUp({ email, password });
+
+    if (error) {
+      signupMessage.textContent = error.message;
+    } else {
+      signupMessage.style.color = "#0f0";
+      signupMessage.textContent = "تم إنشاء الحساب! تحقق من بريدك الإلكتروني لتأكيد التسجيل.";
+    }
+  });
+</script>
+
+</body>
+</html>

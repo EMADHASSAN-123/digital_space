@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مكتبة الموارد</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- مكتبة أيقونات حديثة -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: "#e9f2f6", 100: "#cfe3ec", 200: "#9bc1d0", 300: "#6fa4ba", 400: "#468ca7", 500: "#2e7d93", 600: "#26667F", 700: "#1f5670", 800: "#1a475d", 900: "#163a4d" },
+                        deep: { 50: "#e9eff8", 100: "#cfdcf0", 200: "#a3b9dd", 300: "#7b98c9", 400: "#5377b4", 500: "#355f9f", 600: "#124170", 700: "#0f3860", 800: "#0c2e4f", 900: "#0a263f" },
+                        neutral: "#0F172A",
+                        surface: { light: "#ffffff", dark: "#0B1220" },
+                        muted: "#6B7280",
+                        success: "#10B981",
+                    },
+                    boxShadow: { soft: "0 10px 30px rgba(0,0,0,.08)" },
+                    borderRadius: { xl2: "1.25rem" },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-neutral text-gray-800 dark:text-gray-100 transition-colors duration-300">
+
+  <!-- الهيدر المشترك -->
+     <header id="site-header"></header>
+
+  <main class="max-w-7xl mx-auto mt-10 px-4 py-10">
+    <h1 class="text-2xl font-bold mb-6 flex items-center gap-2 text-gray-800 dark:text-gray-100">
+      <i data-lucide="library" class="w-6 h-6 text-blue-600 dark:text-blue-400"></i>
+      مكتبة الموارد
+    </h1>
+
+    <!-- فلاتر -->
+    <div class="flex flex-wrap gap-3 mb-6">
+      <input id="searchInput" type="text" placeholder="ابحث عن مورد..."
+            class="border rounded-lg px-3 py-2 text-sm flex-1 
+                    bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 
+                    text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"/>
+      <select id="categoryFilter" 
+      class="border rounded-lg px-3 py-2 text-sm 
+                     bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 
+                     text-gray-800 dark:text-gray-100" >
+        <option value="">كل التصنيفات</option>
+      </select>
+      <select id="typeFilter" 
+      class="border rounded-lg px-3 py-2 text-sm 
+                     bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 
+                     text-gray-800 dark:text-gray-100" >
+        <option value="">كل الأنواع</option>
+        <option value="file">ملف</option>
+        <option value="link">رابط</option>
+      </select>
+    </div>
+
+    <!-- شبكة البطاقات -->
+    <div id="resourcesGrid" class="grid md:grid-cols-2 gap-6"></div>
+
+    <!-- حالة عدم وجود موارد -->
+    <div id="emptyState" class="hidden text-center py-10 text-gray-500 dark:text-gray-400">
+      لا توجد موارد متاحة حاليًا.
+    </div>
+
+    <!-- ترقيم الصفحات (يمكنك لاحقًا ربطه مع API أو تركه بسيط) -->
+    <div class="flex justify-center mt-8">
+      <nav class="flex items-center gap-2">
+        <button class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 
+                       border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300">السابق</button>
+        <button class="px-3 py-1 border rounded bg-blue-600 dark:bg-blue-500 text-white">1</button>
+        <button class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 
+                       border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300">2</button>
+        <button class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 
+                       border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300">3</button>
+        <button class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 
+                       border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300">التالي</button>
+      </nav>
+    </div>
+  </main>
+
+  <!-- جذر التوست -->
+  <div id="toasts-root" class="fixed top-4 left-4 space-y-2 z-50"></div>
+
+  <!-- ربط الجافاسكربت -->
+  <script type="module" src="../assets/js/resourcesList.js"></script>
+ <script type="module">
+        import { Header } from '../assets/js/header.js';
+        document.addEventListener('DOMContentLoaded', () => 
+        { 
+            Header.init();
+
+         });
+    </script>
+      <script type="module" src="../../shared/js/theme.js"></script>
+
+  <script>
+    lucide.createIcons(); // تفعيل الأيقونات
+  </script>
+</body>
+</html>

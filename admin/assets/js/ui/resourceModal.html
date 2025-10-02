@@ -1,0 +1,72 @@
+<!-- Resource Modal -->
+<div id="resourceModal"
+     class="modal hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
+    
+    <!-- إغلاق -->
+    <button data-modal-close
+      class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
+      ✕
+    </button>
+
+    <h2 class="text-xl font-bold mb-4">إضافة مورد جديد</h2>
+
+    <form id="resourceForm" class="space-y-4">
+      <!-- نوع المورد -->
+      <div>
+        <label for="resourceType" class="block text-sm font-medium text-gray-700">نوع المورد</label>
+        <select id="resourceType" name="type"
+          class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+          <option value="file">ملف</option>
+          <option value="link">رابط</option>
+        </select>
+      </div>
+
+      <!-- رفع ملف -->
+      <div id="fileUploadWrapper" class="hidden">
+        <label for="resourceFile" class="block text-sm font-medium text-gray-700">اختر ملف</label>
+        <input type="file" id="resourceFile" name="file"
+          class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <!-- إدخال رابط -->
+      <div id="linkWrapper" class="hidden">
+        <label for="resourceLink" class="block text-sm font-medium text-gray-700">الرابط</label>
+        <input type="url" id="resourceLink" name="link"
+          placeholder="https://example.com/resource"
+          class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <!-- العنوان -->
+      <div>
+        <label for="resourceTitle" class="block text-sm font-medium text-gray-700">العنوان</label>
+        <input type="text" id="resourceTitle" name="title"
+          class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <!-- الوصف -->
+      <div>
+        <label for="resourceDescription" class="block text-sm font-medium text-gray-700">الوصف</label>
+        <textarea id="resourceDescription" name="description" rows="3"
+          class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+      </div>
+
+      <!-- التصنيف -->
+      <div>
+        <label for="resourceCategory" class="block text-sm font-medium text-gray-700">التصنيف</label>
+        <select id="resourceCategory" name="category"
+          class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+          <option value="">-- اختر تصنيف --</option>
+        </select>
+      </div>
+
+      <!-- زر الحفظ -->
+      <div class="flex justify-end gap-2">
+        <button type="button" data-modal-close
+          class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100">إلغاء</button>
+        <button type="submit"
+          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">حفظ</button>
+      </div>
+    </form>
+  </div>
+</div>

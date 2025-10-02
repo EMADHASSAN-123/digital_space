@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مساحة — شروحات تقنية وجمالية</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body, html {
+  margin: 0; padding: 0; height: 100%; overflow-x: hidden;
+  font-family: 'Cairo', sans-serif;
+  transition: background-color 1s ease;
+}
+
+#background {
+  position: absolute; top:0; left:0; width:100%; height:100%; z-index:0;
+  transition: background 1s ease;
+}
+
+.typing {
+  border-left: 3px solid currentColor;
+  white-space: nowrap; overflow: hidden;
+  animation: typing 3s steps(40,end), blink .8s infinite;
+  transition: color 1s ease;
+}
+@keyframes typing { from{width:0} to{width:100%} }
+@keyframes blink { 50% {border-color:transparent} }
+
+#modeToggle { position:absolute; top:20px; left:20px; z-index:20; }
+
+.animate-fade-in { animation: fadeIn 1.5s ease forwards; opacity:0; }
+@keyframes fadeIn { 0%{opacity:0; transform:translateY(-10px);} 100%{opacity:1; transform:translateY(0);} }
+
+img.logo { transition: opacity 1s ease, transform 0.5s ease; }
+img.logo:hover { transform: scale(1.05); }
+</style>
+</head>
+<body class="h-screen w-screen relative">
+
+<canvas id="background"></canvas>
+
+<button id="modeToggle" 
+  class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl backdrop-blur-md shadow text-sm transition">
+  تبديل الوضع 🌞
+</button>
+
+<header id="hero" class="relative flex flex-col justify-center items-center text-center h-screen w-full px-6 transition-colors duration-1000 z-10">
+
+  <!-- شعار WEBP أكبر ومتجاوب -->
+
+  <h1 id="heroTitle" class="text-5xl sm:text-6xl font-extrabold drop-shadow-lg mb-4 animate-fade-in">مساحة</h1>
+  
+  <p id="heroDesc" class="typing text-lg sm:text-xl max-w-xl mb-6 animate-fade-in">
+    مساحتك لفهم التقنية والجمال معًا، بعيدًا عن التعقيد الأكاديمي.
+  </p>
+  
+  <a id="heroCTA" href="#tutorials"
+    class="px-8 py-3 bg-white/20 hover:bg-white/30 rounded-2xl backdrop-blur-md shadow-lg font-semibold text-lg transition animate-fade-in">
+    ابدأ التصفح
+  </a>
+</header>
+
+<script>
+const canvas = document.getElementById("background");
+const ctx = canvas.getContext("2d");
+const toggleBtn = document.getElementById("modeToggle");
+const heroTitle = document.getElementById("heroTitle");
+const heroDesc = document.getElementById("heroDesc");
+const heroCTA = document.getElementById("heroCTA");
+const logoImg = document.getElementById("logoImg");
+
+let mode = localStorage.getItem("mode") || "night";
+let stars = [], particles = [];
+
+function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+function createStars(){
+  stars = [];
+  for(let i=0;i<120;i++){ stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, radius:Math.random()*1.5, speed:Math.random()*0.5}); }
+}
+
+function createParticles(color="rgba(0,0,0,0.3)"){
+  particles = [];
+  for(let i=0;i<80;i++){ particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, radius:Math.random()*2+1, color:color, speedX:(Math.random()-0.5)*0.3, speedY:(Math.random()-0.5)*0.3, opacity:Math.random()*0.5+0.2}); }
+}
+
+function updateButton(){ toggleBtn.textContent = mode==="night" ? "الوضع الحالي: ليل 🌌" : "الوضع الحالي: نهار 🌞"; }
+
+function updateTextColor(){
+  if(mode==="night"){
+    heroTitle.style.color = "white";
+    heroDesc.style.color = "white";
+    heroCTA.style.color = "white";
+  } else {
+    heroTitle.style.color = "#111827";
+    heroDesc.style.color = "#111827";
+    heroCTA.style.color = "#111827";
+  }
+}
+
+function updateLogo(){
+  // إذا لديك نسخة مختلفة للشعار النهاري يمكن التبديل بينها
+  // logoImg.src = mode==="night" ? "logo-dark.webp" : "logo-light.webp";
+  logoImg.style.opacity = "0.9";
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(mode==="night"){
+    let gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+    gradient.addColorStop(0,"#111827"); gradient.addColorStop(1,"#000000");
+    ctx.fillStyle = gradient; ctx.fillRect(0,0,canvas.width,canvas.height);
+    for(let star of stars){
+      ctx.beginPath(); ctx.arc(star.x,star.y,star.radius,0,Math.PI*2); ctx.fillStyle="white"; ctx.fill();
+      star.y+=star.speed; if(star.y>canvas.height){star.y=0; star.x=Math.random()*canvas.width;}
+    }
+  } else {
+    let gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+    gradient.addColorStop(0,"#f0f0f0"); gradient.addColorStop(1,"#e0e0e0");
+    ctx.fillStyle=gradient; ctx.fillRect(0,0,canvas.width,canvas.height);
+    for(let p of particles){
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,Math.PI*2); ctx.fillStyle=p.color; ctx.globalAlpha=p.opacity; ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+  requestAnimationFrame(draw);
+}
+
+toggleBtn.addEventListener("click", ()=>{
+  mode = mode==="night" ? "day" : "night";
+  localStorage.setItem("mode", mode);
+  if(mode==="night") createStars(); else createParticles("rgba(0,0,0,0.3)");
+
+  updateButton(); updateTextColor(); updateLogo();
+});
+
+// تشغيل مبدئي
+updateButton(); updateTextColor(); updateLogo();
+if(mode==="night") createStars(); else createParticles("rgba(0,0,0,0.3)");
+draw();
+
+// تأثير Fade-in عند التحميل
+window.addEventListener("load", ()=>{
+  document.querySelectorAll(".animate-fade-in").forEach(el=>{ el.style.opacity=1; });
+});
+</script>
+
+</body>
+</html>

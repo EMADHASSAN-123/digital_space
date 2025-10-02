@@ -1,0 +1,17 @@
+
+User-agent: *
+Allow: /index.html
+Allow: /index.html#categories-bar
+Allow: /public/page/post.html
+Allow: /public/page/resources.html
+Allow: /public/page/profile.html
+Allow: /public/page/login.html
+Allow: /public/page/signup.html
+
+# منع الوصول لصفحات الإدارة   
+Disallow: /admin/
+Disallow: /private/
+Disallow: /public/assets/js/
+
+# رابط ملف Sitemap
+Sitemap: https://yourwebsite.com/sitemap.xml

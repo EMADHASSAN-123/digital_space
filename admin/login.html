@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول - لوحة الإدارة</title>
+  <link rel="stylesheet" href="./assets/css/main.css">
+  <style>
+    /* تصميم حديث للصفحة */
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #161616, #d0b16b);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+    }
+    .login-container {
+      background: rgba(0,0,0,0.85);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .login-container h1 {
+      margin-bottom: 1.5rem;
+      color: #d0b16b;
+    }
+    .login-container input {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: #d0b16b;
+      color: #161616;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .login-container button:hover {
+      background-color: #bfa35c;
+    }
+    .oauth-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .oauth-buttons button {
+      background-color: #fff;
+      color: #161616;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h1>تسجيل الدخول</h1>
+    
+    <input type="email" id="email" placeholder="البريد الإلكتروني">
+    <input type="password" id="password" placeholder="كلمة المرور">
+    <button id="login-email">تسجيل الدخول بالبريد</button>
+
+    <div class="oauth-buttons">
+      <button id="login-github">تسجيل الدخول بـ GitHub</button>
+      <button id="login-google">تسجيل الدخول بـ Google</button>
+    </div>
+
+    <p id="login-message" style="margin-top:1rem;color:#f77;"></p>
+  </div>
+
+<script type="module">
+  import { redirectIfLoggedIn } from './assets/js/auth/guards.js';
+  import { supabase } from './assets/js/supabaseClient.js';
+
+  // حماية الصفحة: إذا المستخدم مسجّل الدخول، تحويله مباشرة
+  await redirectIfLoggedIn();
+
+  const loginEmailBtn = document.getElementById('login-email');
+  const loginMessage = document.getElementById('login-message');
+
+  loginEmailBtn.addEventListener('click', async () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    if (!email || !password) {
+      loginMessage.textContent = "يرجى إدخال البريد وكلمة المرور";
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      loginMessage.textContent = error.message;
+    } else {
+      window.location.href = './index.html';
+    }
+  });
+</script>
+
+</body>
+</html>

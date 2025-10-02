@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الملف الشخصي - مساحتي</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../public/css/index.css">
+  <link rel="stylesheet" href="../public/css/header.css">
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
+
+  <!-- Header -->
+  <header id="site-header"></header>
+
+  <!-- محتوى الملف الشخصي -->
+  <main class="max-w-3xl mx-auto mt-28 p-4 sm:p-6 bg-white dark:bg-gray-800 shadow-lg rounded-2xl">
+    
+    <div class="flex flex-col items-center text-center mb-6">
+      <!-- صورة البروفايل -->
+      <img id="profile-avatar" src="https://via.placeholder.com/100" alt="Avatar"
+        class="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-indigo-500 mb-4 shadow-md">
+      
+      <!-- الاسم الرئيسي -->
+      <h1 id="profile-name" class="text-xl sm:text-2xl font-bold mb-1">جار التحميل...</h1>
+      <!-- البريد -->
+      <p id="profile-email" class="text-gray-600 dark:text-gray-300 text-sm sm:text-base">جار التحميل...</p>
+    </div>
+
+    <!-- بطاقات المعلومات -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+      <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
+        <span class="font-medium text-gray-700 dark:text-gray-200 text-sm sm:text-base">اسم المستخدم:</span>
+        <p id="profile-username" class="text-gray-900 dark:text-white text-sm sm:text-base">جار التحميل...</p>
+      </div>
+
+      <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
+        <span class="font-medium text-gray-700 dark:text-gray-200 text-sm sm:text-base">تاريخ الإنشاء:</span>
+        <p id="profile-created" class="text-gray-900 dark:text-white text-sm sm:text-base">جار التحميل...</p>
+      </div>
+    </div>
+
+    <!-- زر تسجيل الخروج -->
+    <div class="flex justify-center">
+      <button id="logout-btn"
+        class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg transition-all duration-200 text-sm sm:text-base">
+        تسجيل الخروج
+      </button>
+    </div>
+  </main>
+
+  <!-- سكربتات -->
+  <script type="module" >
+    import { Header } from '../public/assets/js/header.js';
+    document.addEventListener('DOMContentLoaded', () => { Header.init(); });
+  </script>
+  <script type="module" src="./js/profile.js" defer></script>
+<script type="module" src="./js/theme.js" defer></script>
+</body>
+</html>

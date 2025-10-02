@@ -8,6 +8,7 @@ import { escapeHtml }       from "../../../../shared/js/ui/helpers.js";
 import { renderPostsCards } from "../ui/table.js";
 import { confirmDialog }    from "../ui/modal.js";
 import { showToast }        from "../ui/toast.js";
+import { APP_CONFIG } from "../config/appConfig.js";
  
 /* === عناصر DOM === */
 const postsContainer      = document.getElementById("postsContainer"); // شبكة البطاقات
@@ -84,7 +85,7 @@ function onTableClick(e) {
   const id = btn.dataset.id;
   const action = btn.dataset.action;
   if (action === "edit") {
-    location.href = `./post-editor.html?id=${id}`;
+    location.href = `${APP_CONFIG.POST_EDITOR}?id=${id}`;
   } else if (action === "delete") {
     handleDelete(id);
   }
@@ -111,7 +112,7 @@ export async function refresh() {
       console.log("posts data:", posts);
       // افترض أن renderPostsCards يتعامل مع المحتوى والـ callbacks
       renderPostsCards(postsContainer, posts, {
-        onEdit: (id) => (location.href = `/admin/post-editor.html?id=${id}`),
+        onEdit: (id) => (location.href = `${APP_CONFIG.POST_EDITOR}?id=${id}`),
         onDelete: async (id) => {
           const ok = await confirmDialog({
             title: "حذف التدوينة",
@@ -182,9 +183,9 @@ export async function initPostsFeature() {
   if (!postsContainer && !postsListBody) return;
 
   // زر إنشاء تدوينة — انتقل لمحرر جديد
-  newPostBtn?.addEventListener(
+  newPostBtn?.addEventListener( 
     "click",
-    () => (location.href = "./post-editor.html?id=NEW")
+    () => (location.href = `${APP_CONFIG.POST_EDITOR}?id=NEW`)
   );
 
   // أزرار تبديل العرض: نضيفها هنا مرة واحدة

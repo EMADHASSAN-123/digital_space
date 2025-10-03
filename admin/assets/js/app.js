@@ -5,7 +5,7 @@ import { initPostsFeature } from "./features/posts.js";
 import { initAdminComments, populatePostsFilter } from "./features/comments.js";
 import { initCategoriesFeature } from "./features/categories.js";
 import { initResourcesFeature } from "./features/resources.js";
-
+import { APP_CONFIG } from "./config/appConfig.js";
 import { signOut } from "./auth/auth.js";
 
 async function boot() {
@@ -55,7 +55,7 @@ async function boot() {
       .getElementById("logoutButton")
       ?.addEventListener("click", async () => {
         await signOut();
-        location.href = "./login.html";
+        location.href = `${APP_CONFIG.LOGIN_PAGE}`;
       });
 
     // ربط منطق تبديل الأقسام

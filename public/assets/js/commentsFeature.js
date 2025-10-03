@@ -4,7 +4,7 @@ import { getCurrentUser } from "../../../admin/assets/js/auth/auth.js";
 import { escapeHtml, formatDate } from "../../../shared/js/ui/helpers.js";
 import { showToast } from  "../../../shared/js/ui/toast.js";
 import * as CommentsCache from "../../../shared/js/cach/commentsCache.js";
-
+import { APP_CONFIG } from "../../../admin/assets/js/config/appConfig.js"
 
 /* =========================================================
    ✨ أدوات مساعدة لعرض التعليقات (UI Helpers)
@@ -117,7 +117,7 @@ export async function initCommentsSection(postId) {
   function redirectToLogin() {
     showToast("يجب تسجيل الدخول أولاً", { type: "error" });
     const next = encodeURIComponent(window.location.pathname + window.location.search);
-    setTimeout(() => window.location.href = `../shared/login.html?next=${next}`, 800);
+    setTimeout(() => window.location.href = `${APP_CONFIG.LOGIN_PAGE}?next=${next}`, 800);
   }
 
   function updateCommentsList(comments) {

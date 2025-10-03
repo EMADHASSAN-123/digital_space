@@ -81,7 +81,7 @@
   <script type="module"> 
     import { supabase } from '../../admin/assets/js/supabaseClient.js';
     import {APP_CONFIG} from "../../admin/assets/js/config/appConfig.js";
-
+    
     const emailInput = document.getElementById('email');
     const submitBtn = document.getElementById('submit-btn');
     const loginMessage = document.getElementById('login-message');
@@ -91,7 +91,7 @@
     function getRedirectURL() {
       const params = new URLSearchParams(window.location.search);
       const next = params.get('next');
-      return next ? decodeURIComponent(next) : `${APP_CONFIG.LOGIN_PAGE}`;
+      return next ? decodeURIComponent(next) : `${APP_CONFIG.INDEX_PAGE}`;
     }
 
     // إرسال Magic Link

@@ -1,6 +1,6 @@
 // assets/js/auth/guards.js
 import { supabase } from '../supabaseClient.js';
-
+import { APP_CONFIG } from '../config/appConfig.js';
 export async function protectAdminPage(redirectIfLoggedOut = true) {
   const { data: { session } } = await supabase.auth.getSession();
  
@@ -17,6 +17,6 @@ export async function protectAdminPage(redirectIfLoggedOut = true) {
 export async function redirectIfLoggedIn() {
   const { data: { session } } = await supabase.auth.getSession();
   if (session) {
-    window.location.href = './index.html';
+    window.location.href = `${APP_CONFIG.LOGIN_PAGE}`;
   }
 }

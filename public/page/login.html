@@ -22,6 +22,7 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body class="font-arabic bg-gray-50 min-h-screen flex items-center justify-center">
+     <header id="site-header"></header>
 
   <main class="container mx-auto px-4 py-12">
     <div class="max-w-md mx-auto">
@@ -72,7 +73,14 @@
   </main>
 
   <script type="module">
-    import { supabase } from '../admin/assets/js/supabaseClient.js';
+    import { Header } from '../assets/js/header.js';
+    document.addEventListener('DOMContentLoaded', () => { Header.init(); });
+  </script>
+
+
+  <script type="module"> 
+    import { supabase } from '../../admin/assets/js/supabaseClient.js';
+    import {APP_CONFIG} from "../../admin/assets/js/config/appConfig.js";
 
     const emailInput = document.getElementById('email');
     const submitBtn = document.getElementById('submit-btn');
@@ -83,7 +91,7 @@
     function getRedirectURL() {
       const params = new URLSearchParams(window.location.search);
       const next = params.get('next');
-      return next ? decodeURIComponent(next) : '/index.html';
+      return next ? decodeURIComponent(next) : `${APP_CONFIG.LOGIN_PAGE}`;
     }
 
     // إرسال Magic Link

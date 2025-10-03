@@ -6,7 +6,7 @@ export async function protectAdminPage(redirectIfLoggedOut = true) {
  
   if (!session && redirectIfLoggedOut) {
     // إذا لم يكن المستخدم مسجّل الدخول، تحويله لصفحة login
-    window.location.href = '../shared/login.html';
+    window.location.href = `${APP_CONFIG.LOGIN_PAGE}`;
     return false;
   }
 

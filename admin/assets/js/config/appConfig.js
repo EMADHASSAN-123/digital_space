@@ -1,5 +1,5 @@
 export const APP_CONFIG = {
-  INDEX_PAGE:'      https://emadhassan-123.github.io/digital_space/index.html',
+  INDEX_PAGE:'      https://emadhassan-123.github.io/digital_space',
   POSTS_TABLE: 'posts',
   PAGE_SIZE: 12,
   TINYMCE_PATH:     'https://emadhassan-123.github.io/digital_space/assets/vendor/tinymce/tinymce.min.js',

@@ -1,7 +1,7 @@
 import { getCurrentUser, signOut } from "../../../admin/assets/js/auth/auth.js";
 import { listPostsCached } from "../../../shared/js/cach/postsCache.js";
 import {APP_CONFIG} from "../../../admin/assets/js/config/appConfig.js";
-
+ 
 export const Header = (() => {
   async function render() {
     const header = document.getElementById("site-header");

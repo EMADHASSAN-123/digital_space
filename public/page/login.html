@@ -69,7 +69,12 @@
         document.getElementById('status').textContent = 'الرجاء إدخال البريد الإلكتروني';
         return;
       }
-      const { data, error } = await supabase.auth.signInWithOtp({ email });
+const { data, error } = await supabase.auth.signInWithOtp({
+  email,
+  options: {
+    emailRedirectTo: "https://emadhassan-123.github.io/digital_space" 
+  }
+});
       if (error) document.getElementById('status').textContent = 'خطأ: ' + error.message;
       else document.getElementById('status').textContent = 'تم إرسال رابط تسجيل الدخول إلى بريدك الإلكتروني';
     });

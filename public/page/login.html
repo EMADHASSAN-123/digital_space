@@ -1,160 +1,78 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>تسجيل الدخول — مساحة رقمية</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول — Digital Space</title>
   <script type="module">
-    import { supabase } from '../../admin/assets/js/supabaseClient.js';
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.es.js';
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const loginForm = document.getElementById('login-form');
-      const signupForm = document.getElementById('signup-form');
-      const magicForm = document.getElementById('magic-form');
+    // استبدل هذه القيم بما لديك
+    const supabaseUrl = 'https://vbnnzmhopcjlkvtuubcj.supabase.co';
+    const supabaseKey = 'PUBLIC_ANON_KEY';
+    export const supabase = createClient(supabaseUrl, supabaseKey);
 
-      const msgBox = document.getElementById('msg-box');
-      const googleBtn = document.getElementById('google-btn');
-      const githubBtn = document.getElementById('github-btn');
-
-      // دالة عرض الرسائل
-      function showMessage(message, type = 'info') {
-        msgBox.innerHTML = `<div class="p-3 rounded-lg text-sm ${
-          type === 'error'
-            ? 'bg-red-100 text-red-700'
-            : type === 'success'
-            ? 'bg-green-100 text-green-700'
-            : 'bg-blue-100 text-blue-700'
-        }">${message}</div>`;
+    // التقاط الجلسة بعد إعادة التوجيه OAuth
+    window.addEventListener('load', async () => {
+      const { data: { session }, error } = await supabase.auth.getSessionFromUrl({ storeSession: true });
+      if (error) {
+        console.error('خطأ أثناء استرجاع الجلسة:', error.message);
+      } else if (session) {
+        document.getElementById('status').textContent = `تم تسجيل الدخول بنجاح! مرحبًا ${session.user.email}`;
       }
-
-      // تسجيل الدخول بالبريد وكلمة المرور
-      loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = e.target.email.value.trim();
-        const password = e.target.password.value.trim();
-
-        showMessage('جاري تسجيل الدخول...', 'info');
-
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (error) {
-          showMessage('خطأ: ' + error.message, 'error');
-        } else {
-          showMessage('تم تسجيل الدخول بنجاح ✅', 'success');
-          setTimeout(() => {
-            window.location.href = '/'; // توجيه للموقع بعد تسجيل الدخول
-          }, 1500);
-        }
-      });
-
-      // إنشاء حساب جديد
-      signupForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = e.target.email.value.trim();
-        const password = e.target.password.value.trim();
-
-        showMessage('جاري إنشاء الحساب...', 'info');
-
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
-
-        if (error) {
-          showMessage('خطأ: ' + error.message, 'error');
-        } else {
-          showMessage('تم إنشاء الحساب بنجاح! ✅ يرجى تأكيد البريد الإلكتروني قبل تسجيل الدخول.', 'success');
-        }
-      });
-
-      // تسجيل الدخول عبر Magic Link
-      magicForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = e.target.email.value.trim();
-
-        showMessage('جاري إرسال الرابط السحري...', 'info');
-
-        const { data, error } = await supabase.auth.signInWithOtp({
-          email,
-        });
-
-        if (error) {
-          showMessage('خطأ: ' + error.message, 'error');
-        } else {
-          showMessage('تم إرسال الرابط إلى بريدك الإلكتروني 📩 تحقق من صندوق الوارد.', 'success');
-        }
-      });
-
-      // تسجيل الدخول عبر Google
-      googleBtn.addEventListener('click', async () => {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: { redirectTo: window.location.origin },
-        });
-        if (error) showMessage('خطأ: ' + error.message, 'error');
-      });
-
-      // تسجيل الدخول عبر GitHub
-      githubBtn.addEventListener('click', async () => {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'github',
-          options: { redirectTo: window.location.origin },
-        });
-        if (error) showMessage('خطأ: ' + error.message, 'error');
-      });
     });
   </script>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center font-sans">
-  <div class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl w-full max-w-md p-6 space-y-5">
-    <h1 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-100">تسجيل الدخول / إنشاء حساب</h1>
-    <div id="msg-box" class="text-center text-sm"></div>
+<body class="bg-gray-50 text-gray-900 flex items-center justify-center min-h-screen">
+  <div style="width:100%; max-width:400px; padding:20px; background:white; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:center;">
+    <h1 style="margin-bottom:20px; font-size:1.5rem;">تسجيل الدخول</h1>
 
-    <!-- تسجيل الدخول -->
-    <form id="login-form" class="space-y-3">
-      <h2 class="font-semibold text-gray-700 dark:text-gray-200">تسجيل الدخول</h2>
-      <input name="email" type="email" placeholder="البريد الإلكتروني" required class="w-full p-2 border rounded-lg focus:ring" />
-      <input name="password" type="password" placeholder="كلمة المرور" required class="w-full p-2 border rounded-lg focus:ring" />
-      <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition">تسجيل الدخول</button>
-    </form>
+    <!-- الزر GitHub -->
+    <button id="github-login" style="width:100%; padding:10px; margin-bottom:10px; background:#333; color:white; border:none; border-radius:4px; cursor:pointer;">
+      تسجيل الدخول عبر GitHub
+    </button>
 
-    <hr class="border-gray-300 dark:border-gray-600">
+    <!-- الزر Google -->
+    <button id="google-login" style="width:100%; padding:10px; margin-bottom:10px; background:#4285F4; color:white; border:none; border-radius:4px; cursor:pointer;">
+      تسجيل الدخول عبر Google
+    </button>
 
-    <!-- إنشاء حساب -->
-    <form id="signup-form" class="space-y-3">
-      <h2 class="font-semibold text-gray-700 dark:text-gray-200">إنشاء حساب جديد</h2>
-      <input name="email" type="email" placeholder="البريد الإلكتروني" required class="w-full p-2 border rounded-lg focus:ring" />
-      <input name="password" type="password" placeholder="كلمة المرور" required class="w-full p-2 border rounded-lg focus:ring" />
-      <button type="submit" class="w-full bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition">إنشاء الحساب</button>
-    </form>
+    <hr style="margin:20px 0; border-color:#ccc;" />
 
-    <hr class="border-gray-300 dark:border-gray-600">
+    <!-- تسجيل الدخول عبر Email (Magic Link) -->
+    <input id="email-input" type="email" placeholder="البريد الإلكتروني" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:4px;" />
+    <button id="email-login" style="width:100%; padding:10px; background:#10B981; color:white; border:none; border-radius:4px; cursor:pointer;">
+      إرسال رابط تسجيل الدخول
+    </button>
 
-    <!-- Magic Link -->
-    <form id="magic-form" class="space-y-3">
-      <h2 class="font-semibold text-gray-700 dark:text-gray-200">تسجيل الدخول عبر رابط سحري</h2>
-      <input name="email" type="email" placeholder="أدخل بريدك الإلكتروني" required class="w-full p-2 border rounded-lg focus:ring" />
-      <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700 transition">إرسال الرابط</button>
-    </form>
-
-    <div class="flex items-center justify-center space-x-2">
-      <span class="text-gray-500 dark:text-gray-400">أو</span>
-    </div>
-
-    <!-- OAuth Buttons -->
-    <div class="flex flex-col gap-3">
-      <button id="google-btn" class="flex items-center justify-center gap-2 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition">
-        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt=""> دخول عبر Google
-      </button>
-
-      <button id="github-btn" class="flex items-center justify-center gap-2 bg-gray-800 text-white p-2 rounded-lg hover:bg-gray-900 transition">
-        <img src="https://www.svgrepo.com/show/512317/github-142.svg" class="w-5 h-5" alt=""> دخول عبر GitHub
-      </button>
-    </div>
+    <p id="status" style="margin-top:15px; color:green; min-height:20px;"></p>
   </div>
+
+  <script type="module">
+    import { supabase } from '../../admin/assets/js/supabaseClient.js';
+    // GitHub Login
+    document.getElementById('github-login').addEventListener('click', async () => {
+      const { error } = await supabase.auth.signInWithOAuth({ provider: 'github' });
+      if (error) document.getElementById('status').textContent = 'خطأ: ' + error.message;
+    });
+
+    // Google Login
+    document.getElementById('google-login').addEventListener('click', async () => {
+      const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+      if (error) document.getElementById('status').textContent = 'خطأ: ' + error.message;
+    });
+
+    // Magic Link Email Login
+    document.getElementById('email-login').addEventListener('click', async () => {
+      const email = document.getElementById('email-input').value;
+      if (!email) {
+        document.getElementById('status').textContent = 'الرجاء إدخال البريد الإلكتروني';
+        return;
+      }
+      const { data, error } = await supabase.auth.signInWithOtp({ email });
+      if (error) document.getElementById('status').textContent = 'خطأ: ' + error.message;
+      else document.getElementById('status').textContent = 'تم إرسال رابط تسجيل الدخول إلى بريدك الإلكتروني';
+    });
+  </script>
 </body>
 </html>

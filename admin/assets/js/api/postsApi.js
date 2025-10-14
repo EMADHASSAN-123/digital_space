@@ -1,13 +1,13 @@
 // postsApi.js
 import { APP_CONFIG } from "../config/appConfig.js";
 import { getAuthHeader } from "../auth/auth.js";
-import { SUPABASE_URL} from "../supabaseClient.js";
+import { SUPABASE_URL } from "../supabaseClient.js";
 
 /* ---------- Helpers ---------- */
-const fnBase = (fn) => `${SUPABASE_URL}/functions/v1/${fn}`;
+const fnBase = (fn) => `https://ugswbpfwmaoztigppacu.supabase.co/functions/v1/${fn}`;
 
 /**
- * يحلل استجابة JSON ويعالج الأخطاء
+ * يحلل استجابة JSON ويعالج الأخطاء بشكل متوافق مع Edge Functions
  */
 async function handleJsonResponse(res) {
   let body = {};
@@ -18,10 +18,14 @@ async function handleJsonResponse(res) {
   } catch {
     body = { raw: text };
   }
-  
-  if (!res.ok) {
+
+  if (!res.ok || body.success === false) {
     const msg =
-      body?.error || body?.message || body?.error_message || `HTTP ${res.status}`;
+      body?.message ||
+      body?.error ||
+      body?.error_message ||
+      `HTTP ${res.status}`;
+
     const err = new Error(msg);
     err.status = res.status;
     err.body = body;
@@ -45,9 +49,7 @@ async function buildHeaders({ json = true, requireAuth = false } = {}) {
     const authHeader = await getAuthHeader();
     if (authHeader) {
       headers["Authorization"] = authHeader;
-    } else if (!requireAuth) {
-      // headers["apikey"] = SUPABASE_ANON_KEY;
-    } else {
+    } else if (requireAuth) {
       throw new Error("Unauthorized");
     }
   } catch (err) {
@@ -64,27 +66,28 @@ async function buildHeaders({ json = true, requireAuth = false } = {}) {
 async function makeRequest(url, options = {}) {
   const res = await fetch(url, options);
   return handleJsonResponse(res);
-}
+} 
  
 /* ---------- POSTS ---------- */
-export async function listPosts({
+export async function listPosts({ 
   search = "",
-  category_id = "",
-  page = 1,
-  per = APP_CONFIG.PAGE_SIZE,
-  with_count = true,
-} = {}) {
+  category_id = "", 
+  page = 1, 
+  status = "true",
+  per = APP_CONFIG.PAGE_SIZE 
+} 
+= {}) {
   const params = new URLSearchParams({
     page: String(Math.max(1, page)),
     per: String(Math.max(1, per)),
-    with_count: String(Boolean(with_count)),
   });
 
   if (category_id && category_id !== "all") params.set("category_id", category_id);
   if (search) params.set("search", search);
+  if (status && status !== "all") params.set("status", status);
 
   const url = `${fnBase("get-public-posts")}?${params.toString()}`;
-  const headers = await buildHeaders({ json: true });
+  const headers = await buildHeaders();
 
   const body = await makeRequest(url, { method: "GET", headers });
 
@@ -92,22 +95,15 @@ export async function listPosts({
     posts: body.posts ?? [],
     page: body.page ?? page,
     per: body.per ?? per,
-    has_more: body.has_more ?? false,
-    total_count: body.total_count ?? Number(body?.total_count || 0),
+    total_count: body.total_count ?? 0,
   };
 }
 
 export async function getPost(id) {
   if (!id) throw new Error("getPost: missing id");
 
-  const params = new URLSearchParams({
-    page: "1",
-    per: "1",
-    with_count: "false",
-    id,
-  });
-
-  const url = `${fnBase("get-public-posts")}?${params}`;
+  const params = new URLSearchParams({ page: "1", per: "1", id });
+  const url = `${fnBase("get-public-posts")}?${params.toString()}`;
   const headers = await buildHeaders();
 
   const body = await makeRequest(url, { method: "GET", headers });
@@ -115,10 +111,10 @@ export async function getPost(id) {
 }
 
 export async function createPost(payload = {}) {
-  if (typeof payload !== "object") throw new Error("createPost: invalid payload");
+  if (!payload?.title || !payload?.content) throw new Error("createPost: title and content are required");
 
   const url = fnBase("create-post");
-  const headers = await buildHeaders({ json: true });
+  const headers = await buildHeaders({ requireAuth: true });
 
   const body = await makeRequest(url, {
     method: "POST",
@@ -126,15 +122,19 @@ export async function createPost(payload = {}) {
     body: JSON.stringify(payload),
   });
 
-  return body.post ?? body;
+  return {
+    success: body.success ?? true,
+    message: body.message ?? "تم إنشاء المنشور بنجاح",
+    post: body.post ?? null,
+  };
 }
 
 export async function updatePost(id, payload = {}) {
   if (!id) throw new Error("updatePost: missing id");
-  if (typeof payload !== "object") throw new Error("updatePost: invalid payload");
+  if (!payload || Object.keys(payload).length === 0) throw new Error("updatePost: invalid payload");
 
   const url = fnBase("update-post");
-  const headers = await buildHeaders({ json: true });
+  const headers = await buildHeaders({ requireAuth: true });
 
   const body = await makeRequest(url, {
     method: "PATCH",
@@ -142,14 +142,18 @@ export async function updatePost(id, payload = {}) {
     body: JSON.stringify({ id, changes: payload }),
   });
 
-  return body.post ?? body;
+  return {
+    success: body.success ?? true,
+    message: body.message ?? "تم تحديث المنشور بنجاح",
+    post: body.post ?? null,
+  };
 }
 
 export async function deletePost(id) {
   if (!id) throw new Error("deletePost: missing id");
 
   const url = fnBase("delete-post");
-  const headers = await buildHeaders({ json: true });
+  const headers = await buildHeaders({ requireAuth: true });
 
   const body = await makeRequest(url, {
     method: "DELETE",
@@ -157,14 +161,19 @@ export async function deletePost(id) {
     body: JSON.stringify({ id }),
   });
 
-  return { success: !!body?.success, raw: body };
+  return {
+    success: body.success ?? false,
+    message: body.message ?? "تم حذف المنشور بنجاح",
+    raw: body,
+  };
 }
 
 /* ---------- CATEGORIES ---------- */
 export async function listCategories() {
   const url = fnBase("get-categories");
+  const headers = await buildHeaders();
   try {
-    const body = await makeRequest(url, { method: "GET", cache: "no-store" });
+    const body = await makeRequest(url, { method: "GET", headers, cache: "no-store" });
     return body.categories ?? [];
   } catch (err) {
     console.error("listCategories error:", err);
@@ -176,8 +185,7 @@ export async function createCategory(payload = {}) {
   if (!payload?.name) throw new Error("createCategory: invalid payload");
 
   const url = fnBase("create-category");
-  // لا نحتاج requireAuth بعد الآن
-  const headers = await buildHeaders({ json: true, requireAuth: false });
+  const headers = await buildHeaders({ requireAuth: true });
 
   const body = await makeRequest(url, {
     method: "POST",
@@ -185,21 +193,28 @@ export async function createCategory(payload = {}) {
     body: JSON.stringify(payload),
   });
 
-  // الباكيند الآن يعيد { category: {...} }
-  return body.category ?? body;
+  return {
+    success: body.success ?? true,
+    message: body.message ?? "تم إنشاء الفئة بنجاح",
+    category: body.category ?? null,
+  };
 }
-/* ---------- CATEGORIES ---------- */
+
 export async function deleteCategory(id) {
   if (!id) throw new Error("deleteCategory: missing id");
 
-  const url = fnBase("delete-category"); // اسم Edge Function
-  const headers = await buildHeaders({ json: true, requireAuth: true });
- 
+  const url = fnBase("delete-category");
+  const headers = await buildHeaders({ requireAuth: true });
+
   const body = await makeRequest(url, {
     method: "DELETE",
     headers,
     body: JSON.stringify({ id }),
   });
 
-  return body.success ?? false;
+  return {
+    success: body.success ?? false,
+    message: body.message ?? "تم حذف الفئة بنجاح",
+    raw: body,
+  };
 }

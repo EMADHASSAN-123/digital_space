@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description"
+    content="مساحة — منصة للإبداع والتدوين التفاعلي، لتبادل المعرفة والأفكار بطريقة بسيطة وواضحة.">
+
+
+  <!-- Meta Description -->
+  <meta name="description"
+    content="مساحة — منصة للإبداع والتدوين التفاعلي، لتبادل المعرفة والأفكار بطريقة بسيطة وواضحة.">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:title" content="مساحة — رحلة التدوين التفاعلية">
+  <meta property="og:description"
+    content="مساحة — منصة للإبداع والتدوين التفاعلي، لتبادل المعرفة والأفكار بطريقة بسيطة وواضحة.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourwebsite.com/">
+  <meta property="og:image" content="https://yourwebsite.com/path/to/your/og-image.jpg">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="مساحة — رحلة التدوين التفاعلية">
+  <meta name="twitter:description"
+    content="مساحة — منصة للإبداع والتدوين التفاعلي، لتبادل المعرفة والأفكار بطريقة بسيطة وواضحة.">
+  <meta name="twitter:image" content="https://yourwebsite.com/path/to/your/og-image.jpg">
+
+  <title>مساحة — رحلة التدوين التفاعلية</title>
+  <!-- Lottie & dotlottie -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" defer></script>
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module" defer></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Tailwind (CDN for quick prototyping) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="./public/css/main.css">
+  <style>
+    .brand-letter {
+  display: inline-block;
+  transform: translateY(20px) scale(0.5);
+  opacity: 0;
+  transition: all 0.5s ease-out;
+}
+
+/* عند إضافة class show تظهر الحروف */
+.brand-letter.show {
+  opacity: 1;
+  transform: translateY(0) scale(1.2);
+  text-shadow: 0 0 20px #d0b16b, 0 0 40px #d0b16b;
+}
+
+/* عند انتهاء التكبير مؤقتًا */
+.brand-letter.final {
+  transform: scale(1);
+}
+  </style>
+</head>
+ 
+<body class=" text-white" style="background-color:  rgb(18, 26, 44);">
+ 
+  <!-- Header (يتم استيرادة ) -->
+  <header id="site-header"></header>
+
+<section id="home" class="hero relative min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+  <canvas id="bgCanvas" class="absolute inset-0 w-full h-full z-0 pointer-events-none"></canvas>
+  <p>المرونة، البساطة، والتكنولوجيا الحديثة</p>
+  <!-- DotLottie — أسفل الهيرو -->
+  <div class="absolute bottom-4 left-0 right-0 flex flex-col md:flex-row items-center justify-center gap-6 px-4 z-10 hero-lottie-bottom">
+    <dotlottie-wc src="public/images/glap.json" style="width:300px;height:300px;" autoplay></dotlottie-wc>
+  </div>
+  
+ 
+ 
+</section>
+
+
+
+
+  <!-- Virtual Space Section (أعدت القسم كاملاً كما كان) -->
+  <section id="virtual-space" class="relative bg-gray-900 text-white py-20 overflow-hidden">
+    <!-- Decorative SVG (دوائر وروابط) -->
+    <svg class="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="xMidYMid slice"
+      xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="15%" cy="20%" r="50" fill="rgba(79,70,229,0.18)" class="animate-float-slow" />
+      <circle cx="80%" cy="30%" r="30" fill="rgba(167,139,250,0.14)" class="animate-float-fast" />
+      <circle cx="50%" cy="70%" r="40" fill="rgba(79,70,229,0.12)" class="animate-float-medium" />
+      <circle cx="30%" cy="50%" r="60" fill="rgba(167,139,250,0.10)" class="animate-float-slow" />
+      <line x1="15%" y1="20%" x2="50%" y2="70%" stroke="rgba(255,255,255,0.06)" stroke-width="2" />
+      <line x1="80%" y1="30%" x2="30%" y2="50%" stroke="rgba(255,255,255,0.06)" stroke-width="2" />
+    </svg>
+
+    <div class="relative z-10 max-w-5xl mx-auto px-4 text-center space-y-10">
+      <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">مساحتي الفكرية</h2>
+      <p class="text-lg md:text-xl text-white/80 max-w-3xl mx-auto">
+        مساحة للإبداع والتجربة، لتبادل المعرفة والأفكار بطريقة بسيطة وواضحة.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-12">
+        <div class="relative bg-gray-800 p-8 rounded-3xl shadow-2xl border-2 border-[#6b573c] text-white">
+          <div class="absolute top-4 left-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <!-- icon -->
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 20l9-5-9-5-9 5 9 5z" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-extrabold mb-3 text-[#6b573c]">تعلّم</h3>
+          <p>اكتشف أدوات وتقنيات حديثة بطريقة ممتعة وبسيطة، وابدأ رحلتك البرمجية بثقة.</p>
+        </div>
+
+        <div class="relative bg-gray-800 p-8 rounded-3xl shadow-2xl border-2 border-[#6b573c] text-white">
+          <div class="absolute top-4 left-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h18M3 17h18" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-extrabold mb-3 text-[#6b573c]">تجربة</h3>
+          <p>شارك تجاربك العملية والدروس المستفادة، وحوّل معرفتك إلى خبرة حقيقية.</p>
+        </div>
+
+        <div class="relative bg-gray-800 p-8 rounded-3xl shadow-2xl border-2 border-[#6b573c] text-white">
+          <div class="absolute top-4 left-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-extrabold mb-3 text-[#6b573c]">إبداع</h3>
+          <p>حفّز خيالك وأطلق مشاريعك الخاصة، وشارك أفكارك الفريدة مع العالم.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog / Main content -->
+  <main id="blog" class="max-w-6xl mx-auto px-4 py-12" role="main">
+    <h2 class="font-semibold text-[rgb(205 227 223)] text-2xl mb-4 flex  gap-2 py-4 px-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#d0b16b]" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M7 8h10M7 12h10M7 16h10M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      مساحة تدوين
+    </h2>
+
+    <!-- <h2 class="text-4xl font-extrabold text-center text-[#d0b16b] mb-12">مساحة تدوين</h2> -->
+
+    <!-- شريط الفئات (ديناميكي) -->
+    <div id="categories-bar" class="flex flex-wrap justify-center gap-4 mb-12"></div>
+
+    <!-- البوستات الأخيرة (ديناميكي) -->
+    <div id="latest-posts" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+
+    <!-- قسم الموارد -->
+
+
+  </main>
+  <aside class="mt-20">
+    <div id="resources" class="p-6 rounded-3xl   shadow-2xl max-w-6xl mx-auto">
+
+
+
+      <h2 class="font-semibold text-[rgb(205 227 223)] text-2xl mb-4 flex  gap-2 py-4 px-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#d0b16b]" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19h16M4 15h16M4 11h16M4 7h16" />
+        </svg>
+        مكتبة الموارد
+      </h2>
+
+      <!-- حاوية الموارد التي سيتم ملؤها ديناميكيًا -->
+      <div id="resources-list" class="">
+        <!-- كل مورد سيظهر كـ بطاقة -->
+      </div>
+
+      <!-- زر زيارة المكتبة -->
+      <div class="mt-6 text-center">
+        <a href="/public/page/resources.html"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-[#d0b16b] text-black font-medium rounded-2xl hover:bg-yellow-400 transition shadow-md">
+          <span>زيارة المكتبة</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+ 
+
+  <!-- Footer -->
+  <footer class="bg-black/80 text-center py-6 mt-12 text-sm text-gray-400">
+    © 2025 مساحة — جميع الحقوق محفوظة
+  </footer>
+
+  
+  <script type="module">
+    import { initCategoriesBar } from "./shared/js/ui/categories-bar.js";
+    import { renderLatestResources } from "./shared/js/ui/resourcesSidebar.js";
+    document.addEventListener("DOMContentLoaded", () => {
+      initCategoriesBar("categories-bar", "latest-posts");
+ 
+      renderLatestResources("resources-list", 5);
+    });
+  </script>
+
+  <script type="module">
+    import { Header } from './public/assets/js/header.js';
+    document.addEventListener('DOMContentLoaded', () => { Header.init(); });
+  </script>
+  <!-- <script src="./public/assets/js/Particles.js" defer></script> -->
+</body>
+
+</html>

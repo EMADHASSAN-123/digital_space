@@ -1,216 +1,186 @@
-// public/assets/js/commentsFeature.js
-// import { fetchComments, createComment } from "../../../admin/assets/js/api/commentsApi.js";
-import { getCurrentUser } from "../../../admin/assets/js/auth/auth.js";
-import { escapeHtml, formatDate } from "../../../shared/js/ui/helpers.js";
-import { showToast } from  "../../../shared/js/ui/toast.js";
-import * as CommentsCache from "../../../shared/js/cach/commentsCache.js";
-import { APP_CONFIG } from "../../../admin/assets/js/config/appConfig.js"
+// commentsFeature.js
+// -----------------------------------------------------------
+// طبقة واجهة المستخدم الخاصة بالتعليقات
+// تعتمد على api/commentsApi.js (الذي يتصل بـ Edge Function)
+// -----------------------------------------------------------
 
-/* =========================================================
-   ✨ أدوات مساعدة لعرض التعليقات (UI Helpers)
-========================================================= */
-function renderCommentHtml(c) {
-  const name = (c.author?.name || c.author?.full_name) || c.user_name || "مستخدم";
-  const time = formatDate(c.created_at);
-  const likes = c.metadata?.likes ?? 0;
-  const replies = c.replies_count ?? 0;
+import { fetchComments, createComment } from "../../../admin/assets/js/api/commentsApi.js";
+import { supabase } from "../../../admin/assets/js/supabaseClient.js";
+import {APP_CONFIG} from "../../../admin/assets/js/config/appConfig.js";
+import {getCurrentUser} from "../../../admin/assets/js/auth/auth.js";
+import { showToast } from "../../../shared/js/ui/toast.js";
+import { renderComment, renderLoginPrompt } from "../../../shared/js/ui/commentsUI.js";
 
-  return `
-    <div class="p-4 bg-white dark:bg-gray-900 rounded-md shadow-sm border-l-4 border-primary hover:shadow-md transition comment-item" data-id="${escapeHtml(c.id)}">
-      <div class="flex items-start gap-3">
-        <div class="flex-shrink-0">
-          <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center font-semibold text-gray-700 dark:text-gray-200">
-            ${escapeHtml(name.charAt(0).toUpperCase())}
-          </div>
-        </div>
-        <div class="flex-1">
-          <div class="flex items-start justify-between">
-            <div>
-              <div class="font-semibold text-gray-800 dark:text-gray-100">${escapeHtml(name)}</div>
-              <div class="text-xs text-gray-400 dark:text-gray-500">${escapeHtml(time)}</div>
-            </div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">${replies ? replies + " رد" : ""}</div>
-          </div>
-          <div class="mt-3 text-gray-700 dark:text-gray-200 whitespace-pre-wrap">${escapeHtml(c.content)}</div>
-          <div class="mt-3 flex gap-4 text-sm">
-            <button class="reply-btn flex items-center gap-2 text-gray-500 hover:text-primary" type="button">
-              <i class="fas fa-reply"></i><span>رد</span>
-            </button>
-            <button class="like-btn flex items-center gap-2 text-gray-500 hover:text-primary" type="button">
-              <i class="fas fa-thumbs-up"></i><span class="likes-count">${likes}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
+/* ----------------------------------------------------------
+   🔐 التحقق من المستخدم الحالي
+----------------------------------------------------------- */
+// async function getCurrentUser() {
+//   try {
+//     const {
+//       data: { user },
+//       error,
+//     } = await supabase.auth.getUser();
+//     if (error) throw error;
+//     return user;
+//   } catch (err) {
+//     console.warn("فشل جلب المستخدم:", err.message);
+//     return null;
+//   }
+// }
+
+/* ----------------------------------------------------------
+   🧹 تنظيف النص وتطهيره من الأكواد
+----------------------------------------------------------- */
+function sanitizeInput(text) {
+  const div = document.createElement("div");
+  div.textContent = text.trim();
+  return div.innerHTML;
 }
 
-/* =========================================================
-   ✨ المكوّن الرئيسي للتعليقات
-========================================================= */
-export async function initCommentsSection(postId) {
-  if (!postId) return console.warn("initCommentsSection: postId missing");
+/* ----------------------------------------------------------
+   ✅ التحقق من صلاحية الإدخال
+----------------------------------------------------------- */
+function validateComment(text) {
+  if (!text || text.trim().length < 3) {
+    throw new Error("التعليق قصير جدًا، يجب أن يحتوي على 3 أحرف على الأقل.");
+  }
+}
 
-  // عناصر DOM
-  const section   = document.getElementById("comments-section");
-  const listEl    = document.getElementById("comments-list");
-  const input     = document.getElementById("comment-input");
-  const submitBtn = document.getElementById("comment-submit");
-  const form      = document.getElementById("comment-form");
-  const countEl   = document.getElementById("commentsCount");
+/* ----------------------------------------------------------
+   📥 تحميل التعليقات الخاصة ببوست معين
+----------------------------------------------------------- */
+export async function loadComments(postId, containerElement, options = {}) {
+  const { page = 1, per = 10 } = options;
+  try {
+    const data = await fetchComments({ postId, page, per });
+    const comments = data.comments || [];
+    console.log(comments);
+    renderComments(containerElement, comments);
+  } catch (error) {
+    console.error("خطأ أثناء تحميل التعليقات:", error);
+    showToast("تعذر تحميل التعليقات. حاول مجددًا لاحقًا.", "error");
+  }
+}
 
-  if (!section || !listEl) {
-    console.warn("initCommentsSection: missing DOM nodes (comments-section or comments-list)");
+/* ----------------------------------------------------------
+   🧱 عرض التعليقات في الواجهة
+----------------------------------------------------------- */
+function renderComments(container, comments) {
+  container.innerHTML = "";
+  if (!comments || comments.length === 0) {
+    container.innerHTML = "<p class='text-gray-500 text-sm'>لا توجد تعليقات بعد.</p>";
     return;
   }
-  section.classList.remove("hidden");
- 
-  /* ---------- التحقق من تسجيل الدخول ---------- */
-  let currentUser = null;
-  try { currentUser = await getCurrentUser(); } catch {}
-  const isAuthenticated = !!currentUser;
+  comments.forEach((comment) => {
+    const el = renderComment(comment);
+    container.appendChild(el);
+  });
+}
 
-  if (!isAuthenticated) setupLoginBanner();
-  else setupWelcomeNote();
-
-  /* ---------- تحميل التعليقات ---------- */
-  async function loadComments() {
-    listEl.innerHTML = `<p class="text-gray-500 dark:text-gray-400 text-center">جارٍ تحميل التعليقات...</p>`;
-    try {
-      const comments = await CommentsCache.getComments(postId, { page: 1, per: 20 });
-      updateCommentsList(comments);
-    } catch (err) {
-      console.error("loadComments error", err);
-      listEl.innerHTML = `<p class="text-red-500 text-center">فشل تحميل التعليقات.</p>`;
-      showToast("فشل تحميل التعليقات", { type: "error" });
-    }
+/* ----------------------------------------------------------
+   🔐 تهيئة واجهة قسم التعليقات
+----------------------------------------------------------- */
+export async function initCommentsSection(postId, containerElement, formElement) {
+  if (!postId) {
+    console.error("معرف البوست غير موجود!");
+    containerElement.innerHTML = "<p class='text-red-500 text-sm'>معرف البوست غير موجود!</p>";
+    formElement.style.display = "none";
+    return;
   }
 
-  /* ---------- إرسال تعليق جديد ---------- */
-  async function submitNewComment() {
-    if (!isAuthenticated) return redirectToLogin();
+  const user =  getCurrentUser();
 
-    const content = (input?.value || "").trim();
-    if (!content) return showToast("اكتب تعليقاً قبل الإرسال", { type: "error" });
+  // إذا لم يسجل المستخدم الدخول
+  if (!user) {
+    const loginPrompt = renderLoginPrompt();
+    containerElement.prepend(loginPrompt);
 
-    const orig = submitBtn?.innerHTML;
-    if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = "جـارٍ الإرسـال..."; }
-
-    try {
-      const newComment = await CommentsCache.addComment(postId, content);
-      prependComment(newComment);
-      input.value = "";
-      showToast("تم إضافة التعليق", { type: "success" });
-    } catch (err) {
-      console.error("create comment error", err);
-      showToast("فشل إرسال التعليق", { type: "error" });
-    } finally {
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = orig; }
-    }
-  }
-
-  /* ---------- UI Helpers داخل المكون ---------- */
-  function setupLoginBanner() { /* نفس الكود عندك مع التبسيط */ }
-  function setupWelcomeNote() { /* رسالة ترحيبية */ }
-
-  function redirectToLogin() {
-    showToast("يجب تسجيل الدخول أولاً", { type: "error" });
-    const next = encodeURIComponent(window.location.pathname + window.location.search);
-    setTimeout(() => window.location.href = `${APP_CONFIG.LOGIN_PAGE}?next=${next}`, 800);
-  }
-
-  function updateCommentsList(comments) {
-    if (countEl) countEl.textContent = `${comments.length} تعليق${comments.length === 1 ? "" : "ات"}`;
-
-    if (!comments.length) {
-      listEl.innerHTML = `<p class="text-gray-500 dark:text-gray-400 text-center">لا توجد تعليقات بعد. كن أول من يعلق!</p>`;
-      return;
-    }
-
-    listEl.innerHTML = "";
-    comments.forEach(c => appendComment(c));
-  }
-
-  function appendComment(c) {
-    const wrapper = document.createElement("div");
-    wrapper.innerHTML = renderCommentHtml(c);
-
-    const el = wrapper.firstElementChild;
-    bindCommentActions(el, c.id);
-    listEl.appendChild(el);
-  }
-
-  function prependComment(c) {
-    const wrapper = document.createElement("div");
-    wrapper.innerHTML = renderCommentHtml(c);
-
-    const el = wrapper.firstElementChild;
-    bindCommentActions(el, c.id);
-    listEl.insertBefore(el, listEl.firstChild);
-
-    if (countEl) {
-      const cur = Number((countEl.textContent || "0").replace(/\D/g, "")) || 0;
-      countEl.textContent = `${cur + 1} تعليق${cur + 1 === 1 ? "" : "ات"}`;
-    }
-  }
-
-  function bindCommentActions(el, commentId) {
-    const replyBtn = el.querySelector(".reply-btn");
-    const likeBtn  = el.querySelector(".like-btn");
-    const likesEl  = el.querySelector(".likes-count");
-
-    replyBtn?.addEventListener("click", () => openReplyBox(el, commentId));
-    likeBtn?.addEventListener("click", () => { if (likesEl) likesEl.textContent = Number(likesEl.textContent || 0) + 1; });
-  }
-
-  async function openReplyBox(commentNode, parentId) {
-    if (!isAuthenticated) return redirectToLogin();
-    if (commentNode.querySelector(".reply-box")) return;
-
-    const box = document.createElement("div");
-    box.className = "reply-box mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded";
-    box.innerHTML = `
-      <textarea class="reply-textarea w-full p-2 border border-gray-300 dark:border-gray-700 rounded" rows="3" placeholder="اكتب ردك..."></textarea>
-      <div class="flex gap-2 justify-end mt-2">
-        <button class="btn-cancel px-3 py-1 rounded border" type="button">إلغاء</button>
-        <button class="btn-send px-3 py-1 rounded bg-primary text-white" type="button">إرسال</button>
-      </div>
-    `;
-
-    const ta = box.querySelector(".reply-textarea");
-    const cancel = box.querySelector(".btn-cancel");
-    const send = box.querySelector(".btn-send");
-
-    cancel.addEventListener("click", () => box.remove());
-    send.addEventListener("click", async () => {
-      const content = ta.value.trim();
-      if (!content) return showToast("اكتب نص الرد", { type: "error" });
-
-      send.disabled = true;
-      try {
-        await CommentsCache.addComment(postId, content, parentId);
-        showToast("تم إرسال الرد", { type: "success" });
-        box.remove();
-        await loadComments();
-      } catch (err) {
-        console.error("reply error", err);
-        showToast("فشل إرسال الرد", { type: "error" });
-        send.disabled = false;
-      }
+    formElement.addEventListener("submit", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      showToast("يجب تسجيل الدخول لإضافة تعليق.", "warning", {
+        actionText: "تسجيل الدخول",
+        actionHandler: () => {
+          window.location.href = APP_CONFIG.LOGIN_PAGE;
+        },
+      });
     });
 
-    commentNode.appendChild(box);
-    ta.focus();
+   loadComments(postId, containerElement);
+    return;
   }
 
-  /* ---------- Events ---------- */
-  if (submitBtn) {
-    submitBtn.addEventListener("click", (e) => { e.preventDefault(); submitNewComment(); });
-  } else if (form) {
-    form.addEventListener("submit", (e) => { e.preventDefault(); submitNewComment(); });
-  }
+  // المستخدم مسجل الدخول ✅
+  await loadComments(postId, containerElement);
+  setupCommentForm(postId, user, formElement, containerElement);
+}
 
-  // تشغيل أول تحميل
-  await loadComments();
+/* ----------------------------------------------------------
+   💬 منطق إضافة تعليق جديد (مع حماية Rate Limit)
+----------------------------------------------------------- */
+const COMMENT_COOLDOWN = 15 * 1000; // 15 ثانية
+let lastCommentTime = 0;
+
+function setupCommentForm(postId, user, form, container) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const textarea = form.querySelector("textarea");
+    const rawText = textarea.value;
+
+    try {
+      const now = Date.now();
+
+      // تحقق من معدل الإرسال (Rate Limit)
+      if (now - lastCommentTime < COMMENT_COOLDOWN) {
+        showToast("يرجى الانتظار قليلًا قبل إرسال تعليق آخر.", "info");
+        return;
+      }
+
+      validateComment(rawText);
+      const cleanText = sanitizeInput(rawText);
+
+      // عرض التعليق مباشرة في الواجهة (Optimistic UI)
+      const tempComment = {
+        id: `temp-${now}`,
+        post_id: postId,
+        user_id: user.id,
+profiles: {
+    username: user.user_metadata?.username || "مستخدم",
+    avatar_url: user.user_metadata?.avatar_url || null,
+  },
+          content: cleanText,
+        status: "pending",
+        created_at: new Date().toISOString(),
+      };
+      const tempEl = renderComment(tempComment, true);
+      container.prepend(tempEl);
+      textarea.value = "";
+
+      // إرسال التعليق إلى السيرفر بما يتوافق مع اسكيما جدول التعليقات
+      const res = await createComment({
+        post_id: postId,
+        user_id: user.id,
+        content: cleanText,
+        status: "pending",
+      });
+
+      const savedComment = res.comment || res;
+      tempEl.replaceWith(renderComment(savedComment));
+
+      lastCommentTime = now;
+      showToast("تم إرسال تعليقك بنجاح!", "success");
+    } catch (error) {
+      console.error("خطأ أثناء إضافة التعليق:", error);
+      if (error.status === 401) {
+        showToast("يجب تسجيل الدخول لإضافة تعليق.", "warning", {
+          actionText: "تسجيل الدخول",
+          actionHandler: () => (window.location.href = APP_CONFIG.LOGIN_PAGE),
+        });
+      } else {
+        showToast(error.message || "حدث خطأ أثناء إرسال التعليق.", "error");
+      }
+    }
+  });
 }

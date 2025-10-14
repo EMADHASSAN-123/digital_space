@@ -8,7 +8,7 @@ const typeFilter = document.getElementById("typeFilter");
 const searchInput = document.getElementById("searchInput");
 const toastsRoot = document.getElementById("toasts-root");
 
-const FUNCTIONS_BASE = "https://vbnnzmhopcjlkvtuubcj.supabase.co/functions/v1/get-resources";// GET endpoint
+const FUNCTIONS_BASE = "https://ugswbpfwmaoztigppacu.supabase.co/functions/v1/get-resources";// GET endpoint
 
 // إذا كنت تخزن الملفات في bucket عام باسم "resources" في Supabase:
 const STORAGE_PUBLIC_PREFIX = window.STORAGE_PUBLIC_PREFIX || null; 

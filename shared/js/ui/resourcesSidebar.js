@@ -1,71 +1,68 @@
 // shared/js/ui/resources.js
 import { getResources } from "../../../admin/assets/js/api/resourcesApi.js";
-import { listCategoriesCached } from "../cach/categoriesCache.js"; // تأكد أن لديك API لجلب الفئات
+import { listCategoriesCached } from "../cach/categoriesCache.js";
 
-export async function renderLatestResources(containerId = "resources", limit = 5) {
+export async function renderLatestResources(containerId = "resources-list", limit = 6) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  try { 
-    // جلب الموارد والفئات بالتوازي
-    const [resources, categories] = await Promise.all([getResources(), listCategoriesCached()]);
+  try {
+    const [resources, categories] = await Promise.all([
+      getResources(),
+      listCategoriesCached()
+    ]);
 
-    // إنشاء خريطة ID => Name
     const categoriesMap = {};
-    categories.forEach(c => categoriesMap[c.id] = c.name);
+    categories.forEach(c => (categoriesMap[c.id] = c.name));
 
-    // ترتيب الموارد حسب الأحدث وتحديد العدد المطلوب
     const sortedResources = resources
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
       .slice(0, limit);
 
-    container.innerHTML = `
-      <div class="p-4 rounded-xl  bg-gray-900 shadow-2xl">
-        
-      <div class="space-y-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="resources-list"></div>
-        
-      </div>
-    `;
+    container.innerHTML = "";
 
-    const listContainer = container.querySelector("#resources-list");
+    sortedResources.forEach(r => {
+      const shortDesc = r.description
+        ? r.description.split(" ").slice(0, 12).join(" ") +
+          (r.description.split(" ").length > 12 ? "..." : "")
+        : "لا يوجد وصف متاح.";
 
-   sortedResources.forEach(r => {
-  const shortDesc = r.description
-    ? r.description.split(" ").slice(0, 10).join(" ") + (r.description.split(" ").length > 10 ? "..." : "")
-    : "";
+      const categoryName = categoriesMap[r.category_id] || "عام";
 
-  const categoryName = categoriesMap[r.category_id] || "عام";
+      const isFile = r.resource_type === "file";
+      const iconHTML = isFile
+        ? `<i class="fa-solid fa-file-arrow-down text-[#d0b16b] text-3xl"></i>`
+        : `<i class="fa-solid fa-link text-[#d0b16b] text-3xl"></i>`;
 
-  const card = document.createElement("div");
-  card.className = " p-6 rounded-2xl border-2 border-[#6b573c] shadow-lg hover:shadow-2xl hover:scale-105 transition transform duration-300 cursor-pointer";
+      const card = document.createElement("div");
+      card.className = `
+        group p-6 rounded-2xl bg-gradient-to-b from-gray-900 to-gray-950 border border-[#d0b16b]/30 
+        shadow-md hover:shadow-lg hover:shadow-[#d0b16b]/30 transition-all duration-300 cursor-pointer hover:scale-[1.03]
+      `;
 
-  const iconHTML = r.resource_type === "file" 
-    ? `<i class="fa-solid fa-file-arrow-down text-[#d0b16b] text-2xl mb-2"></i>` 
-    : `<i class="fa-solid fa-arrow-up-right-from-square text-[#d0b16b] text-2xl mb-2"></i>`;
+      card.innerHTML = `
+        <div class="flex items-center justify-between mb-3">
+          <h4 class="text-lg font-bold text-[#d0b16b]">${r.title}</h4>
+          <span class="text-xs bg-[#d0b16b]/20 text-[#d0b16b] px-2 py-0.5 rounded-full">${categoryName}</span>
+        </div>
+        <div class="flex items-center gap-3 mb-3">${iconHTML}
+          <p class="text-gray-300 text-sm leading-relaxed group-hover:text-gray-100 transition">${shortDesc}</p>
+        </div>
+        <div class="text-sm text-gray-500 group-hover:text-[#d0b16b] transition flex items-center gap-2 justify-end">
+          <span>عرض المورد</span>
+          <i class="fa-solid fa-arrow-right-long"></i>
+        </div>
+      `;
 
-  card.innerHTML = `
-    <div class="flex items-center justify-between mb-2">
-      <h4 class="text-lg font-bold text-[#d0b16b]">${r.title}</h4>
-      <span class="text-xs bg-[#d0b16b]/20 text-[#d0b16b] px-2 py-0.5 rounded-full ml-2">${categoryName}</span>
-    </div>
-    ${iconHTML}
-    <p class="text-gray-300 text-sm leading-relaxed">${shortDesc}</p>
-  `;
+      card.addEventListener("click", () => {
+        window.open(r.url || "#", "_blank");
+      });
 
-  card.addEventListener("click", () => {
-    if(r.resource_type === "file") {
-      window.open(r.url || "#", "_blank");
-    } else if(r.resource_type === "link") {
-      window.open(r.url, "_blank");
-    }
-  });
-
-  listContainer.appendChild(card);
-});
-
-
+      container.appendChild(card);
+    });
   } catch (err) {
     console.error("فشل تحميل الموارد:", err);
-    container.innerHTML = `<p class="text-red-500">فشل تحميل الموارد</p>`;
+    container.innerHTML =
+      `<p class="text-red-500 text-center">حدث خطأ أثناء تحميل الموارد 😔</p>`;
   }
 }

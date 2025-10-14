@@ -7,6 +7,7 @@ import {
   updateResource,
   deleteResource,
 } from "../api/resourcesApi.js";
+import { supabase } from "../supabaseClient.js";
 import { listCategoriesCached } from "../../../../shared/js/cach/categoriesCache.js";
 import { showError, showSuccess } from "../ui/notifications.js";
 
@@ -23,7 +24,7 @@ export function initResourcesFeature() {
 
   if (!newBtn || !form) return;
 
-  let editingId = null; // لو المستخدم يعدّل بدلاً من إضافة
+  let editingId = null;
 
   // ------------------------------
   // فتح النموذج لإضافة مورد جديد
@@ -32,6 +33,7 @@ export function initResourcesFeature() {
     editingId = null;
     form.reset();
     await populateCategories();
+    toggleTypeFields(typeSelect.value);
     formContainer.classList.remove("hidden");
   });
 
@@ -60,14 +62,14 @@ export function initResourcesFeature() {
   // ------------------------------
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const data = collectFormData();
-    const valid = validateResourceData(data);
-    if (!valid.ok) {
-      showError(valid.error);
-      return;
-    }
-
     try {
+      const data = await collectFormData();
+      const valid = validateResourceData(data);
+      if (!valid.ok) {
+        showError(valid.error);
+        return;
+      }
+
       if (editingId) {
         const updated = await updateResource(editingId, data);
         updateResourceUI(editingId, updated);
@@ -77,11 +79,13 @@ export function initResourcesFeature() {
         addResourceToUI(created);
         showSuccess("تم إضافة المورد بنجاح");
       }
+
       form.reset();
       formContainer.classList.add("hidden");
       editingId = null;
     } catch (err) {
-      showError(err.message);
+      console.error("خطأ أثناء الإرسال:", err);
+      showError(err.message || "حدث خطأ أثناء الحفظ");
     }
   });
 
@@ -119,23 +123,50 @@ export function initResourcesFeature() {
     }
   }
 
-  function collectFormData() {
+  // ============================
+  // تجميع بيانات النموذج
+  // ============================
+  async function collectFormData() {
+    const fileInput = document.getElementById("resourceFile");
+    const file = fileInput?.files[0] || null;
+
+    let fileUrl = null;
+    if (file) {
+      fileUrl = await handleFileUpload(file); // رفع الملف
+    }
+
     return {
       title: document.getElementById("resourceTitle").value.trim(),
-      resource_type: typeSelect.value,
-      file_path: document.getElementById("resourceFile").files[0] || null,
-      url: document.getElementById("resourceUrl").value.trim(),
+      resource_type: document.getElementById("resourceType").value,
+      url: document.getElementById("resourceUrl")?.value || fileUrl,
+      file_path:fileUrl,
       description: document.getElementById("resourceDescription").value.trim(),
-      category_id: document.getElementById("resourceCategory").value,
+      category_id:
+        Number(document.getElementById("resourceCategory").value) || null,
       status: document.getElementById("resourceStatus").value,
+      size_in_bytes: file?.size || null,
     };
   }
 
+  // ============================
+  // التحقق من البيانات
+  // ============================
   function validateResourceData(data) {
+    console.log(document.getElementById("resourceTitle"));
+
     if (!data.title) return { ok: false, error: "يجب إدخال عنوان المورد" };
-    if (data.resource_type === "file" && !data.file_path) return { ok: false, error: "يجب رفع ملف" };
-    if (data.resource_type === "link" && !isValidUrl(data.url)) return { ok: false, error: "رابط غير صالح" };
-    if (data.file_path && data.file_path.size > 5 * 1024 * 1024) return { ok: false, error: "حجم الملف أكبر من 5MB" };
+
+    if (data.resource_type === "file") {
+      if (!data.file_path) return { ok: false, error: "يجب رفع ملف" };
+      if (data.size_in_bytes > 10 * 1024 * 1024)
+        return { ok: false, error: "حجم الملف أكبر من 10MB" };
+    }
+
+    if (data.resource_type === "link") {
+      if (!isValidUrl(data.url))
+        return { ok: false, error: "رابط المورد غير صالح" };
+    }
+
     return { ok: true };
   }
 
@@ -148,19 +179,48 @@ export function initResourcesFeature() {
     }
   }
 
+  // ============================
+  // رفع الملف إلى Supabase Storage
+  // ============================
+  async function handleFileUpload(file) {
+    const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
+
+    // بعض أنواع الملفات (مثل docx) قد تُرفض إن لم يتم تحديد contentType يدويًا
+    const contentType =
+      file.type || "application/octet-stream"; // بديل آمن لأنواع غير معروفة
+
+    const { data, error } = await supabase.storage
+      .from("blog-media")
+      .upload(`files/${fileName}`, file, {
+        cacheControl: "3600",
+        upsert: false,
+        contentType,
+      });
+
+    if (error) {
+      console.error("Upload error:", error);
+      throw new Error("فشل رفع الملف - " + error.message);
+    }
+
+    const { data: publicData } = supabase.storage
+      .from("blog-media")
+      .getPublicUrl(`files/${fileName}`);
+
+    return publicData?.publicUrl || null;
+  }
+
   // ------------------------------
-  // عرض مورد في UI
+  // عرض مورد في الواجهة
   // ------------------------------
   async function addResourceToUI(data) {
     const card = document.createElement("div");
     card.className = "bg-deep-700 rounded-xl2 p-4 text-surface-light shadow-sm";
     card.dataset.id = data.id;
 
-    // استرجاع اسم الفئة بشكل غير متزامن
     let categoryName = "غير محدد";
     try {
       const categories = await listCategoriesCached();
-      const category = categories.find(c => c.id == data.category_id);
+      const category = categories.find((c) => c.id == data.category_id);
       if (category) categoryName = category.name;
     } catch {}
 
@@ -170,7 +230,7 @@ export function initResourcesFeature() {
         <span class="text-xs px-2 py-1 rounded bg-gray-600">${data.status}</span>
       </div>
       <p class="text-sm opacity-80 mb-2">${data.description || ""}</p>
-      <p class="text-xs mb-2">التصنيف: ${categoryName}</p>
+      <p class="text-xs mb-2 categoryName">التصنيف: ${categoryName}</p>
       <div class="flex gap-2 text-sm mb-2">
         ${
           data.resource_type === "file"
@@ -184,42 +244,40 @@ export function initResourcesFeature() {
       </div>
     `;
 
-    card.querySelector(".editBtn").addEventListener("click", () => startEditResource(data));
-    card.querySelector(".deleteBtn").addEventListener("click", () => handleDeleteResource(data.id));
+    card
+      .querySelector(".editBtn")
+      .addEventListener("click", () => startEditResource(data));
+    card
+      .querySelector(".deleteBtn")
+      .addEventListener("click", () => handleDeleteResource(data.id));
 
     listContainer.appendChild(card);
     if (window.lucide) lucide.createIcons();
   }
 
   // ------------------------------
-  // تحديث UI بعد التعديل
+  // تحديث الواجهة بعد التعديل
   // ------------------------------
   async function updateResourceUI(id, updated) {
-  const card = listContainer.querySelector(`[data-id="${id}"]`);
-  if (!card) return;
+    const card = listContainer.querySelector(`[data-id="${id}"]`);
+    if (!card) return;
 
-  card.querySelector("h4").textContent = updated.title;
-  card.querySelector("p").textContent = updated.description || "";
-  card.querySelector("span").textContent = updated.status;
+    card.querySelector("h4").textContent = updated.title;
+    card.querySelector("p").textContent = updated.description || "";
+    card.querySelector("span").textContent = updated.status;
 
-  // تحديث اسم الفئة
-  try {
-    const categories = await listCategoriesCached();
-    const category = categories.find(c => c.id == updated.category_id);
-    const categoryName = category ? category.name : "غير محدد";
-    const categoryElement = card.querySelector(".categoryName");
-    if (categoryElement) {
-      categoryElement.textContent = categoryName;
-    } else {
-      const p = document.createElement("p");
-      p.className = "text-xs mb-2 categoryName";
-      p.textContent = categoryName;
-      card.insertBefore(p, card.querySelector(".flex.gap-2.text-sm.mb-2"));
+    try {
+      const categories = await listCategoriesCached();
+      const category = categories.find((c) => c.id == updated.category_id);
+      const categoryName = category ? category.name : "غير محدد";
+      const categoryElement = card.querySelector(".categoryName");
+      if (categoryElement) {
+        categoryElement.textContent = `التصنيف: ${categoryName}`;
+      }
+    } catch (err) {
+      console.error("خطأ في تحديث اسم الفئة:", err);
     }
-  } catch (err) {
-    console.error("خطأ في تحديث اسم الفئة:", err);
   }
-}
 
   // ------------------------------
   // حذف مورد
@@ -237,17 +295,18 @@ export function initResourcesFeature() {
   }
 
   // ------------------------------
-  // بدء التعديل على مورد
+  // بدء تعديل مورد
   // ------------------------------
   async function startEditResource(data) {
     editingId = data.id;
     document.getElementById("resourceTitle").value = data.title;
-    document.getElementById("resourceDescription").value = data.description || "";
+    document.getElementById("resourceDescription").value =
+      data.description || "";
     document.getElementById("resourceStatus").value = data.status;
     typeSelect.value = data.resource_type;
     toggleTypeFields(data.resource_type);
     document.getElementById("resourceUrl").value = data.url || "";
-    await populateCategories(data.category_id); // تحميل الفئات مع تحديد الحالية
+    await populateCategories(data.category_id);
     formContainer.classList.remove("hidden");
   }
 
@@ -263,14 +322,14 @@ export function initResourcesFeature() {
   }
 
   // ------------------------------
-  // تحميل التصنيفات في القائمة
+  // تحميل التصنيفات
   // ------------------------------
   async function populateCategories(selectedId = null) {
     const select = document.getElementById("resourceCategory");
     try {
       const categories = await listCategoriesCached();
       select.innerHTML = `<option value="">اختر التصنيف</option>`;
-      categories.forEach(cat => {
+      categories.forEach((cat) => {
         const opt = document.createElement("option");
         opt.value = cat.id;
         opt.textContent = cat.name;

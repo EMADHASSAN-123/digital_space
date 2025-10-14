@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <h1>
+        comments is <span id="comments"></span>
+
+    </h1>
+
+    <script type="module">
+
+        import { supabase } from "./admin/assets/js/supabaseClient.js"
+
+        // ضع المتغيّرات الحقيقية أثناء النشر (لا تحفظ service role في الواجهة الأمامية)
+        const data = await supabase
+            .from('comments')
+            .select('*');
+
+        const comments = document.getElementById("comments");
+        comments.innerHTML = data.data.length;
+        console.log(data.data[0].id);
+
+    </script>
+
+</body>
+
+</html>

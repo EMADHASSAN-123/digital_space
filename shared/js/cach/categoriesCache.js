@@ -57,7 +57,7 @@ export async function fetchWithCache(fetcher, key) {
   saveCache(key, data);
   return data;
 } 
- 
+  
 /* ---------- Wrapped API Function ---------- */
 
 export async function listCategoriesCached() {

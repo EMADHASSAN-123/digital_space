@@ -2,182 +2,358 @@
 <html lang="ar" dir="rtl">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مساحة — مدونة رقمية لتدوين المعرفة ومشاركة الموارد</title>
   <meta name="description"
-    content="مساحة — منصة للإبداع والتدوين التفاعلي، لتبادل المعرفة والأفكار بطريقة بسيطة وواضحة.">
+    content="مساحة هي مدونة رقمية شخصية لتدوين المعرفة العلمية والمكتسبة بطرق تفاعلية وباسلوب مبتكر, شرح المفاهيم التقنية، ومشاركة الموارد بطريقة بصرية ممتعة. اكتشف مقالات، أدوات، ومشاريع رقمية.">
+ <!-- Google Fonts Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" as="style">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
 
+  <!-- Tailwind CSS -->
 
-  <!-- Meta Description -->
-  <meta name="description"
-    content="مساحة — منصة للإبداع والتدوين التفاعلي، لتبادل المعرفة والأفكار بطريقة بسيطة وواضحة.">
+  <!-- Google Fonts Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- Open Graph / Facebook -->
-  <meta property="og:title" content="مساحة — رحلة التدوين التفاعلية">
-  <meta property="og:description"
-    content="مساحة — منصة للإبداع والتدوين التفاعلي، لتبادل المعرفة والأفكار بطريقة بسيطة وواضحة.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://yourwebsite.com/">
-  <meta property="og:image" content="https://yourwebsite.com/path/to/your/og-image.jpg">
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="مساحة — رحلة التدوين التفاعلية">
-  <meta name="twitter:description"
-    content="مساحة — منصة للإبداع والتدوين التفاعلي، لتبادل المعرفة والأفكار بطريقة بسيطة وواضحة.">
-  <meta name="twitter:image" content="https://yourwebsite.com/path/to/your/og-image.jpg">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-  <title>مساحة — رحلة التدوين التفاعلية</title>
-  <!-- Lottie & dotlottie -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" defer></script>
-  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module" defer></script>
+  <!-- GSAP -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  
 
-  <!-- Tailwind (CDN for quick prototyping) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="./public/css/main.css">
   <style>
-    .brand-letter {
-  display: inline-block;
-  transform: translateY(20px) scale(0.5);
-  opacity: 0;
-  transition: all 0.5s ease-out;
-}
+    :root {
+      --accent: #d0b16b;
+      --glow: rgba(208, 177, 107, 0.18);
+    }
 
-/* عند إضافة class show تظهر الحروف */
-.brand-letter.show {
-  opacity: 1;
-  transform: translateY(0) scale(1.2);
-  text-shadow: 0 0 20px #d0b16b, 0 0 40px #d0b16b;
-}
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(ellipse at center, #071226 0%, #02040a 70%);
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
 
-/* عند انتهاء التكبير مؤقتًا */
-.brand-letter.final {
-  transform: scale(1);
-}
+    /* الخلفية الفضائية */
+    .stars-bg {
+      position: fixed;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=2000&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      opacity: 0.28;
+      z-index: 0;
+      pointer-events: none;
+      filter: blur(2px) brightness(0.7);
+    }
+
+    /* الهيرو */
+    .hero-wrap {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    /* SVG نصي */
+    .logo-svg {
+      width: min(1200px, 90%);
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      overflow: visible;
+    }
+
+    svg text {
+      font-family: 'Cairo', sans-serif;
+      font-weight: 900;
+      font-size: 180px;
+      fill: transparent;
+      stroke: var(--accent);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      paint-order: stroke fill;
+      filter: drop-shadow(0 0 15px rgba(208, 177, 107, 0.25));
+    }
+
+    .hero-sub {
+      margin-top: 1rem;
+      color: #e6e9ef;
+      opacity: 0.95;
+      font-size: 1.2rem;
+    }
+
+    /* أيقونات أسفل الهيرو */
+    .icons-row {
+      margin-top: 2rem;
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .icon-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: #fff;
+      opacity: 0.95;
+    }
+
+    .icon-box {
+      width: 120px;
+      height: 120px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .icon-box:hover {
+      transform: translateY(-10px) scale(1.15) rotate(5deg);
+      box-shadow: 0 20px 45px rgba(208, 177, 107, 0.3);
+      background: rgba(208, 177, 107, 0.08);
+    }
+
+    .icon-box i {
+      width: 78px;
+      height: 78px;
+    }
+
+    .icon-label {
+      font-size: 0.9rem;
+      color: #dfe7ee;
+    }
+
+    /* قسم مساحة فكرية */
+    .feature-card {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .icon-circle {
+      transition: all 0.3s ease;
+    }
+
+
+    @media (max-width: 720px) {
+      svg text {
+        font-size: 140px;
+      }
+
+      .icon-box {
+        width: 80px;
+        height: 80px;
+      }
+    }
   </style>
 </head>
- 
-<body class=" text-white" style="background-color:  rgb(18, 26, 44);">
 
-  <!-- Header (يتم استيرادة ) -->
+<body>
   <header id="site-header"></header>
 
-<section id="home" class="hero relative min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
-  <canvas id="bgCanvas" class="absolute inset-0 w-full h-full z-0 pointer-events-none"></canvas>
+  <!-- خلفية فضائية -->
+  <div class="stars-bg" aria-hidden="true"></div>
 
-  <!-- DotLottie — أسفل الهيرو -->
-  <div class="absolute bottom-4 left-0 right-0 flex flex-col md:flex-row items-center justify-center gap-6 px-4 z-10 hero-lottie-bottom">
-    <dotlottie-wc src="public/images/glap.json" style="width:300px;height:300px;" autoplay></dotlottie-wc>
-  </div>
-
- 
-</section>
-
-
-
-
-  <!-- Virtual Space Section (أعدت القسم كاملاً كما كان) -->
-  <section id="virtual-space" class="relative bg-gray-900 text-white py-20 overflow-hidden">
-    <!-- Decorative SVG (دوائر وروابط) -->
-    <svg class="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="xMidYMid slice"
-      xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="15%" cy="20%" r="50" fill="rgba(79,70,229,0.18)" class="animate-float-slow" />
-      <circle cx="80%" cy="30%" r="30" fill="rgba(167,139,250,0.14)" class="animate-float-fast" />
-      <circle cx="50%" cy="70%" r="40" fill="rgba(79,70,229,0.12)" class="animate-float-medium" />
-      <circle cx="30%" cy="50%" r="60" fill="rgba(167,139,250,0.10)" class="animate-float-slow" />
-      <line x1="15%" y1="20%" x2="50%" y2="70%" stroke="rgba(255,255,255,0.06)" stroke-width="2" />
-      <line x1="80%" y1="30%" x2="30%" y2="50%" stroke="rgba(255,255,255,0.06)" stroke-width="2" />
+  <!-- الهيرو -->
+  <div class="hero-wrap">
+    <svg class="logo-svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid meet">
+      <text id="masahaText" x="50%" y="55%" text-anchor="middle" dominant-baseline="middle">
+        مساحة
+      </text>
     </svg>
 
-    <div class="relative z-10 max-w-5xl mx-auto px-4 text-center space-y-10">
-      <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">مساحتي الفكرية</h2>
-      <p class="text-lg md:text-xl text-white/80 max-w-3xl mx-auto">
-        مساحة للإبداع والتجربة، لتبادل المعرفة والأفكار بطريقة بسيطة وواضحة.
-      </p>
+    <p class="hero-sub">فضاء رقمي حر لتدوين الأفكار، شرح المفاهيم، ومشاركة الموارد — بطريقة بصرية وممتعة.</p>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-12">
-        <div class="relative bg-gray-800 p-8 rounded-3xl shadow-2xl border-2 border-[#6b573c] text-white">
-          <div class="absolute top-4 left-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-            <!-- icon -->
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 20l9-5-9-5-9 5 9 5z" />
-            </svg>
+    <div class="icons-row flex justify-center gap-8 mt-8" aria-hidden="true">
+      <div class="icon-wrap flex flex-col items-center" title="المرونة">
+        <div class="icon-box p-4 bg-[#d0b16b]/20 rounded-full">
+          <i data-lucide="maximize-2" class="text-[#d0b16b] w-8 h-8"></i>
+        </div>
+        <div class="icon-label text-sm font-medium text-gray-200">المرونة</div>
+      </div>
+
+      <div class="icon-wrap flex flex-col items-center" title="البساطة">
+        <div class="icon-box p-4 bg-[#d0b16b]/20 rounded-full ">
+          <i data-lucide="layout" class="text-[#d0b16b] w-8 h-8"></i>
+        </div>
+        <div class="icon-label text-sm font-medium text-gray-200">البساطة</div>
+      </div>
+
+      <div class="icon-wrap flex flex-col items-center" title="التقنية">
+        <div class="icon-box p-4 bg-[#d0b16b]/20 rounded-full ">
+          <i data-lucide="cpu" class="text-[#d0b16b] w-8 h-8"></i>
+        </div>
+        <div class="icon-label text-sm font-medium text-gray-200">التقنية</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- قسم مساحة فكرية -->
+  <section class="features-section py-24  text-white relative z-10">
+    <div class="container mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center mb-16 text-yellow-500">مساحة فكرية</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+
+        <!-- بطاقة 1 -->
+        <div
+          class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center">
+          <div
+            class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
+            <i data-lucide="code-2" class="text-yellow-500 w-10 h-10"></i>
           </div>
-          <h3 class="text-2xl font-extrabold mb-3 text-[#6b573c]">تعلّم</h3>
-          <p>اكتشف أدوات وتقنيات حديثة بطريقة ممتعة وبسيطة، وابدأ رحلتك البرمجية بثقة.</p>
+          <h3 class="text-2xl font-semibold mb-3">نشر المعرفة التقنية</h3>
+          <p class="text-gray-400 leading-relaxed">
+            مقالات وأفكار حول تصميم الويب، التطوير، وأدوات التقنية الحديثة بطريقة مبسطة وجمالية.
+          </p>
         </div>
 
-        <div class="relative bg-gray-800 p-8 rounded-3xl shadow-2xl border-2 border-[#6b573c] text-white">
-          <div class="absolute top-4 left-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h18M3 17h18" />
-            </svg>
+        <!-- بطاقة 2 -->
+        <div
+          class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center">
+          <div
+            class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
+            <i data-lucide="brain" class="text-yellow-500 w-10 h-10"></i>
           </div>
-          <h3 class="text-2xl font-extrabold mb-3 text-[#6b573c]">تجربة</h3>
-          <p>شارك تجاربك العملية والدروس المستفادة، وحوّل معرفتك إلى خبرة حقيقية.</p>
+          <h3 class="text-2xl font-semibold mb-3">مساحة للتفكير الرقمي</h3>
+          <p class="text-gray-400 leading-relaxed">
+            تأملات في كيفية بناء أفكار ومشاريع رقمية تعكس هويتنا بصدق وبساطة.
+          </p>
         </div>
 
-        <div class="relative bg-gray-800 p-8 rounded-3xl shadow-2xl border-2 border-[#6b573c] text-white">
-          <div class="absolute top-4 left-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
+        <!-- بطاقة 3 -->
+        <div
+          class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center">
+          <div
+            class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
+            <i data-lucide="book-open" class="text-yellow-500 w-10 h-10"></i>
           </div>
-          <h3 class="text-2xl font-extrabold mb-3 text-[#6b573c]">إبداع</h3>
-          <p>حفّز خيالك وأطلق مشاريعك الخاصة، وشارك أفكارك الفريدة مع العالم.</p>
+          <h3 class="text-2xl font-semibold mb-3">تجارب ودروس شخصية</h3>
+          <p class="text-gray-400 leading-relaxed">
+            تدوينات توثق الرحلة التعليمية والمهنية بكل ما فيها من نجاحات وتحديات.
+          </p>
         </div>
+
+        <!-- بطاقة 4 -->
+        <div
+          class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center">
+          <div
+            class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
+            <i data-lucide="users" class="text-yellow-500 w-10 h-10"></i>
+          </div>
+          <h3 class="text-2xl font-semibold mb-3">تفاعل ومشاركة</h3>
+          <p class="text-gray-400 leading-relaxed">
+            منصة تتيح التواصل والتعلّم المشترك في بيئة داعمة ومفتوحة للجميع.
+          </p>
+        </div>
+
       </div>
     </div>
   </section>
 
-  <!-- Blog / Main content -->
-  <main id="blog" class="max-w-6xl mx-auto px-4 py-12" role="main">
-    <h2 class="font-semibold text-[rgb(205 227 223)] text-2xl mb-4 flex  gap-2 py-4 px-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#d0b16b]" fill="none" viewBox="0 0 24 24"
-        stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M7 8h10M7 12h10M7 16h10M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-      مساحة تدوين
-    </h2>
+  <!-- قسم مساحة تدوين -->
+  <section id="blog-section" class="relative z-10 py-24">
+    <div class="container mx-auto px-6 text-center">
 
-    <!-- <h2 class="text-4xl font-extrabold text-center text-[#d0b16b] mb-12">مساحة تدوين</h2> -->
-
-    <!-- شريط الفئات (ديناميكي) -->
-    <div id="categories-bar" class="flex flex-wrap justify-center gap-4 mb-12"></div>
-
-    <!-- البوستات الأخيرة (ديناميكي) -->
-    <div id="latest-posts" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-
-    <!-- قسم الموارد -->
-
-
-  </main>
-  <aside class="mt-20">
-    <div id="resources" class="p-6 rounded-3xl   shadow-2xl max-w-6xl mx-auto">
-
-
-
-      <h2 class="font-semibold text-[rgb(205 227 223)] text-2xl mb-4 flex  gap-2 py-4 px-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#d0b16b]" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19h16M4 15h16M4 11h16M4 7h16" />
-        </svg>
-        مكتبة الموارد
+      <!-- عنوان -->
+      <h2 class="text-4xl font-bold mb-10 text-[#d0b16b] drop-shadow-lg">
+        مساحة تدوين
       </h2>
 
-      <!-- حاوية الموارد التي سيتم ملؤها ديناميكيًا -->
-      <div id="resources-list" class="">
-        <!-- كل مورد سيظهر كـ بطاقة -->
+      <!-- شريط الفئات -->
+      <div id="categories-bar" class="flex flex-wrap justify-center gap-4 mb-12    transition-all duration-500"></div>
+
+      <!-- البوستات الأخيرة -->
+      <div id="latest-posts" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"></div>
+    </div>
+  </section>
+  <!-- قسم موارد مساحة -->
+  <!-- قسم موارد مساحة -->
+  <section id="resources-section"
+    class="relative py-20  from-black via-gray-950 to-black text-gray-100 overflow-hidden">
+    <div class="container mx-auto px-6 lg:px-12 text-center">
+
+      <!-- العنوان الرئيسي -->
+      <div class="mb-12" id="resources-heading">
+        <h2 class="text-4xl md:text-5xl font-extrabold text-[#d0b16b] mb-4">موارد مساحة</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          مجموعة من الأدوات والمراجع الرقمية التي شاركها <span class="text-[#d0b16b] font-semibold">مساحة</span>
+          لتساعدك في رحلتك التقنية والمعرفية.
+        </p>
       </div>
 
+      <!-- قائمة الموارد -->
+      <div id="resources-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+
       <!-- زر زيارة المكتبة -->
-      <div class="mt-6 text-center">
+      <div class="mt-10" id="visit-library">
         <a href="/public/page/resources.html"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-[#d0b16b] text-black font-medium rounded-2xl hover:bg-yellow-400 transition shadow-md">
+          class="inline-flex items-center gap-3 px-6 py-3 bg-[#d0b16b] text-black font-semibold rounded-2xl hover:bg-yellow-400 transition-all shadow-lg hover:shadow-yellow-400/40">
           <span>زيارة المكتبة</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- قسم عن مساحة -->
+  <section class="about-masaha relative z-10 py-24 px-6  backdrop-blur-lg rounded-3xl max-w-7xl mx-auto my-16">
+    <div class="container mx-auto flex flex-col lg:flex-row items-center gap-12">
+
+      <!-- صورة أو أيقونة -->
+      <div class="flex-shrink-0">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80"
+          alt="مساحة" class="rounded-3xl shadow-2xl w-72 lg:w-96 object-cover">
+      </div>
+
+      <!-- المحتوى النصي -->
+      <div class="flex-1 text-center lg:text-left space-y-6">
+        <h2 class="text-4xl font-extrabold text-[#d0b16b]">عن مساحة</h2>
+        <p class="text-gray-200 text-lg leading-relaxed">
+          "مساحة" هي مرايتي الرقمية ,أشارك معرفتي العلمية حول المواضيع التقنية التي لطالما وجدت صعوبة في استيعابها، وأوفر موارد تساعد أي شخص على التعلم
+          والإبداع بطريقة ممتعة وبصرية 
+          هدفي أن اقدم محتوى بسيط  ، واضح، يسهل فهمة ، بحيث يستطيع الزائر الاستفادة سواء كان مبتدئ أو محترف.
+        </p>
+        <p class="text-gray-400 text-base leading-relaxed">
+          قمت بانشاء هذه المساحة لتكون فضاء رقمي حر للتدوين والمشاركة والاقتراحات، تجمع بين المعرفة العملية والشخصية في مكان واحد. اشترك في مساحة 
+          لتكتشف العالم الرقمي بطريقة جديدة.
+        </p>
+        <a href="/public/page/about.html"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-[#d0b16b] text-black font-semibold rounded-2xl hover:bg-yellow-400 transition shadow-md">
+          تعرف على مساحة
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
             stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -185,32 +361,302 @@
         </a>
       </div>
     </div>
-  </aside>
+  </section>
 
+  <!-- قسم مشاريعي وتجارب عملية -->
+  <!-- قسم مشاريعي -->
+  <section class="projects-section py-24 relative z-10">
+    <div class="container mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center mb-12 text-yellow-500">مشاريع مساحة على GitHub</h2>
+      <div id="projects-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </div>
+  </section>
 
+  <footer class=" text-gray-200 pt-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
 
+      <!-- قسم حول الموقع -->
+      <div>
+        <h4 class="text-xl font-bold text-[#d0b16b] mb-4">مساحتي</h4>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          مدونتي الشخصية التي أشارك فيها الأفكار، الموارد، المشاريع، والتدوينات التقنية.
+          هدفنا تسهيل الوصول للمعلومات بطريقة منظمة وسهلة.
+        </p>
+      </div>
 
-  <!-- Footer -->
-  <footer class="bg-black/80 text-center py-6 mt-12 text-sm text-gray-400">
-    © 2025 مساحة — جميع الحقوق محفوظة
+      <!-- روابط سريعة -->
+      <div>
+        <h4 class="text-xl font-bold text-[#d0b16b] mb-4">روابط سريعة</h4>
+        <ul class="space-y-2">
+          <li><a href="/" class="hover:text-yellow-400 transition">الرئيسية</a></li>
+          <li><a href="#categories-bar" class="hover:text-yellow-400 transition">منشوراتي</a></li>
+          <li><a href="/public/page/resources.html" class="hover:text-yellow-400 transition">مكتبة الموارد</a></li>
+          <li><a href="/public/page/contact.html" class="hover:text-yellow-400 transition">تواصل معنا</a></li>
+        </ul>
+      </div>
+
+      <!-- تواصل اجتماعي -->
+      <div>
+        <h4 class="text-xl font-bold text-[#d0b16b] mb-4">تابعنا</h4>
+        <div class="flex gap-4">
+          <a href="https://www.facebook.com/share/1722sjEFjD" class="hover:text-yellow-400 transition"><i
+              class="fab fa-facebook fa-lg"></i></a>
+          <a href="www.linkedin.com/in/emad-hassan-14262b2b2" class="hover:text-yellow-400 transition"><i
+              class="fab fa-linkedin fa-lg"></i></a>
+          <a href="https://emadhassan-123.github.io" class="hover:text-yellow-400 transition"><i
+              class="fab fa-github fa-lg"></i></a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- حقوق الملكية -->
+    <div class="border-t border-gray-700 mt-8 pt-4 text-center text-gray-500 text-sm">
+      &copy; 2025 جميع الحقوق محفوظة لموقع <span class="text-[#d0b16b]">مساحتي</span> | تطوير <a
+        href="https://github.com/emadah" class="hover:text-yellow-400 transition">عماد حسان</a>
+    </div>
   </footer>
 
-  
+
+
+
+  <!-- سكربت التحريك -->
+  <script>
+    lucide.createIcons();
+
+    // الهيرو
+    window.addEventListener('load', () => {
+      const text = document.getElementById('masahaText');
+      const length = text.getComputedTextLength();
+
+      text.style.strokeDasharray = length;
+      text.style.strokeDashoffset = length;
+
+      gsap.to(text, {
+        strokeDashoffset: 0,
+        duration: 2.5,
+        ease: "power2.out",
+        onUpdate() {
+          const progress = gsap.getProperty(text, 'strokeDashoffset') / length;
+          const wave = Math.sin(progress * Math.PI * 8) * 10;
+          const depth = Math.cos(progress * Math.PI * 4) * 6;
+          text.setAttribute('y', 220 + wave + depth);
+          text.setAttribute('stroke', `hsl(${progress * 360}, 80%, 50%)`);
+        },
+        onComplete: () => {
+          gsap.to(text, { repeat: -1, yoyo: true, duration: 1.2, attr: { strokeWidth: 5 }, ease: "sine.inOut" });
+          for (let i = 0; i < 75; i++) {
+            const particle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            particle.setAttribute("r", 3 + Math.random() * 3);
+            particle.setAttribute("fill", "#d0b16b");
+            const svg = document.querySelector('.logo-svg');
+            svg.appendChild(particle);
+            gsap.fromTo(particle,
+              { cx: 600, cy: 210, opacity: 1 },
+              { cx: 600 + (Math.random() - 0.5) * 300, cy: 210 + (Math.random() - 0.5) * 300, opacity: 0, duration: 1.5 + Math.random(), ease: "power2.out", onComplete: () => svg.removeChild(particle) }
+            );
+          }
+        }
+      });
+
+      // أيقونات الهيرو
+      gsap.from('.icon-box', {
+        y: 30,
+        stagger: 0.15,
+        duration: 1.2,
+        ease: "power3.out",
+        delay: 2.5
+      });
+    });
+
+    // بطاقات مساحة فكرية عند التمرير
+    gsap.utils.toArray('.feature-card').forEach((card, i) => {
+      gsap.fromTo(card,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+          delay: i * 0.2,
+          scrollTrigger: {
+            trigger: card,
+            start: "top 80%",
+            toggleActions: "play none none none"
+          }
+        }
+      );
+    });
+
+    // توهج الأيقونات داخل البطاقات
+    document.querySelectorAll('.feature-card').forEach(card => {
+      const icon = card.querySelector('.icon-circle');
+      card.addEventListener('mouseenter', () => {
+        gsap.to(icon, { scale: 1.2, boxShadow: "0 0 25px rgba(208,177,107,0.7)", duration: 0.3, ease: "power2.out" });
+      });
+      card.addEventListener('mouseleave', () => {
+        gsap.to(icon, { scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)", duration: 0.3, ease: "power2.out" });
+      });
+    });
+  </script>
+
   <script type="module">
     import { initCategoriesBar } from "./shared/js/ui/categories-bar.js";
     import { renderLatestResources } from "./shared/js/ui/resourcesSidebar.js";
+
+
     document.addEventListener("DOMContentLoaded", () => {
       initCategoriesBar("categories-bar", "latest-posts");
-
       renderLatestResources("resources-list", 5);
+
+      // تحريك العنوان والفئات والبطاقات عبر GSAP
+      gsap.from("#blog-section h2", {
+        duration: 1.2,
+        y: 60,
+        opacity: 0,
+        ease: "power3.out",
+      });
+
+      gsap.from("#categories-bar", {
+        duration: 1.2,
+
+        y: 40,
+        delay: 0.4,
+        ease: "power2.out",
+      });
+
+      gsap.from("#latest-posts > article", {
+        duration: 1.1,
+        y: 50,
+        opacity: 0,
+        stagger: 0.15,
+        delay: 0.7,
+        ease: "power3.out",
+      });
     });
+
+    gsap.from(".about-masaha", {
+      scrollTrigger: {
+        trigger: ".about-masaha",
+        start: "top 80%",
+      },
+      opacity: 0,
+      y: 60,
+      duration: 1.2,
+      ease: "power3.out"
+    });
+
+    gsap.from("#resources-heading", {
+      opacity: 0,
+      y: 60,
+      duration: 1.2,
+      scrollTrigger: {
+        trigger: "#resources-heading",
+        start: "top 80%",
+      }
+    });
+
+    gsap.from("#resources-list > div", {
+      opacity: 0,
+      y: 60,
+      duration: 1,
+      stagger: 0.2,
+      scrollTrigger: {
+        trigger: "#resources-list",
+        start: "top 80%",
+      }
+    });
+
+    gsap.from("#visit-library", {
+      opacity: 0,
+      scale: 0.9,
+      duration: 1,
+      delay: 0.3,
+      scrollTrigger: {
+        trigger: "#visit-library",
+        start: "top 90%",
+      }
+
+
+
+    });
+
+
+    gsap.registerPlugin(ScrollTrigger);
+    const languageIcons = {
+      "JavaScript": "fa-brands fa-js",
+      "HTML": "fa-brands fa-html5",
+      "CSS": "fa-brands fa-css3-alt",
+      "TypeScript": "fa-brands fa-js",
+      "Java": "fa-brands fa-java",
+      "C#": "fa-solid fa-code",
+      "PHP": "fa-brands fa-php",
+      "Ruby": "fa-brands fa-ruby",
+      "Go": "fa-brands fa-golang"
+    };
+
+    async function renderGitHubProjects(containerId = "projects-list", username = "YOUR_GITHUB_USERNAME", limit = 6) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      try {
+        const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated`);
+        const repos = await response.json();
+
+        container.innerHTML = ""; // تفريغ الحاوية
+
+        repos.slice(0, limit).forEach((repo, index) => {
+          const card = document.createElement("article");
+          card.className = `
+          bg-[rgba(255,255,255,0.05)] backdrop-blur-lg border border-[#d0b16b]/30
+          rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transition transform duration-300 cursor-pointer overflow-hidden p-6 flex flex-col justify-between
+        `;
+
+          const iconClass = languageIcons[repo.language] || "fa-solid fa-code";
+
+          card.innerHTML = `
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-xl font-bold text-[#d0b16b]">${repo.name}</h3>
+            <span class="text-xs bg-[#d0b16b]/20 text-[#d0b16b] px-2 py-0.5 rounded-full ml-2">${repo.language || "عام"}</span>
+          </div>
+          <i class="${iconClass} text-[#d0b16b] text-2xl mb-3"></i>
+          <p class="text-gray-300 text-sm mb-4 leading-relaxed">${repo.description || "لا يوجد وصف"}</p>
+          <a href="${repo.html_url}" target="_blank" class="inline-flex items-center gap-2 text-[#d0b16b] hover:text-yellow-300 font-semibold transition">
+            عرض المشروع
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        `;
+          container.appendChild(card);
+
+          // تأثير GSAP عند ظهور البطاقة
+          gsap.from(card, {
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+            },
+            opacity: 0,
+            y: 50,
+            duration: 0.8,
+            delay: index * 0.1,
+            ease: "power3.out"
+          });
+        });
+
+      } catch (err) {
+        console.error("فشل تحميل مشاريع GitHub:", err);
+        container.innerHTML = `<p class="text-red-500 text-center">فشل تحميل المشاريع من GitHub</p>`;
+      }
+    }
+
+    // استدعاء الدالة
+    renderGitHubProjects("projects-list", "EMADHASSAN-123", 6); // ضع اسم حسابك
   </script>
 
   <script type="module">
     import { Header } from './public/assets/js/header.js';
     document.addEventListener('DOMContentLoaded', () => { Header.init(); });
   </script>
-  <script src="./public/assets/js/Particles.js" defer></script>
+
 </body>
 
 </html>

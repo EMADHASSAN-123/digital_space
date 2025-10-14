@@ -107,6 +107,8 @@ async function loadPost(id) {
 }
 
 // ---------------- ضغط الصور قبل الرفع ----------------
+
+// ---------------- ضغط الصور قبل الرفع ----------------
 async function compressImage(file, quality = 0.8, maxWidth = 1200) {
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -153,6 +155,7 @@ async function uploadImageToSupabase(file) {
   }
 }
 
+
 // ---------------- تهيئة TinyMCE ----------------
 function initTinyMCE() {
   if (!window.tinymce) { console.error("TinyMCE not loaded"); return; }
@@ -196,20 +199,7 @@ function insertGSAP(editor) {
 }
 
 // ---------------- إدراج صندوق متحرك مع GSAP ----------------
-function insertAnimatedBox(editor) {
-  const boxHtml = `
-    <div class="gsap-box" style="width:120px;height:120px;background:#4caf50;margin:20px auto;"></div>
-  `;
-  editor.insertContent(boxHtml);
 
-  // تفعيل الأنيميشن بعد الإدراج
-  setTimeout(() => {
-    const box = document.querySelector(".gsap-box");
-    if (box) {
-      gsap.to(box, { rotation: 360, scale: 1.2, duration: 2, repeat: -1, yoyo: true });
-    }
-  }, 200);
-}
 
 function insertMindMap(editor) {
   const html = `
@@ -264,7 +254,7 @@ async function handleImageUpload(editor) {
   input.onchange = async () => {
     const file = input.files[0];
     if (!file) return;
-
+ 
     try {
       showToast("⏳ جاري ضغط ورفع الصورة...");
       const url = await uploadImageToSupabase(file);
@@ -293,6 +283,7 @@ postForm.addEventListener("submit", async e => {
     status: statusInput.value,
     excerpt: excerptInput.value.trim(),
     content,
+    
   };
 
   if (!payload.title) return showToast("يرجى إدخال عنوان التدوينة");

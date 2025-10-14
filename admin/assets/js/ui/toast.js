@@ -5,6 +5,6 @@ export function showToast(msg, { timeout = 3000 } = {}) {
   t.className = 'p-2 rounded shadow my-2 bg-gray-800 text-white';
   t.textContent = msg;
   root.appendChild(t); 
-  setTimeout(() => t.remove(), timeout);
+  setTimeout(() => t.remove(), timeout); 
 }
    

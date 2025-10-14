@@ -12,11 +12,13 @@
 //    │   │       ├─ handleHide(commentId) → الإخفاء
 //    │   │       └─ handleDelete(commentId) → الحذف
 
+
+// D:\digital_space\admin\assets\js\features\comments.js
 import { fetchComments, adminUpdateStatus, deleteComment } from '../api/commentsApi.js';
 import { CommentsTable } from '../ui/commentsTable.js';
 import { showToast } from '../ui/toast.js';
 const table = new CommentsTable('commentsTableContainer');
-
+ 
 const DEFAULT_PER = 20;
 let currentFilters = {
   postId: null,
@@ -174,7 +176,9 @@ export async function loadComments() {
 /**
  * يمكنك استخدام هذه الدالة لملء فلتر البوستات (<select id="commentsPostFilter">)
  * posts: array of { id, title }
- */export function populatePostsFilter(posts = [], commentsTableInstance) {
+ */
+
+export function populatePostsFilter(posts = [], commentsTableInstance) {
   const postsSelect = document.getElementById('commentsPostFilter');
   if (!postsSelect) return;
 

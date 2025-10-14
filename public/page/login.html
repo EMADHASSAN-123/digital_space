@@ -1,83 +1,129 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تسجيل الدخول — Digital Space</title>
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.es.js';
-
-    // استبدل هذه القيم بما لديك
-    const supabaseUrl = 'https://vbnnzmhopcjlkvtuubcj.supabase.co';
-    const supabaseKey = 'PUBLIC_ANON_KEY';
-    export const supabase = createClient(supabaseUrl, supabaseKey);
-
-    // التقاط الجلسة بعد إعادة التوجيه OAuth
-    window.addEventListener('load', async () => {
-      const { data: { session }, error } = await supabase.auth.getSessionFromUrl({ storeSession: true });
-      if (error) {
-        console.error('خطأ أثناء استرجاع الجلسة:', error.message);
-      } else if (session) {
-        document.getElementById('status').textContent = `تم تسجيل الدخول بنجاح! مرحبًا ${session.user.email}`;
-      }
-    });
-  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تسجيل الدخول - مساحة</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 text-gray-900 flex items-center justify-center min-h-screen">
-  <div style="width:100%; max-width:400px; padding:20px; background:white; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:center;">
-    <h1 style="margin-bottom:20px; font-size:1.5rem;">تسجيل الدخول</h1>
+<body class="bg-gray-100 flex justify-center items-center h-screen">
 
-    <!-- الزر GitHub -->
-    <button id="github-login" style="width:100%; padding:10px; margin-bottom:10px; background:#333; color:white; border:none; border-radius:4px; cursor:pointer;">
-      تسجيل الدخول عبر GitHub
-    </button>
+  <div class="bg-white p-8 rounded-xl shadow-lg w-96">
+    <h2 class="text-center text-2xl font-bold mb-6">مساحة</h2>
 
-    <!-- الزر Google -->
-    <button id="google-login" style="width:100%; padding:10px; margin-bottom:10px; background:#4285F4; color:white; border:none; border-radius:4px; cursor:pointer;">
-      تسجيل الدخول عبر Google
-    </button>
+    <div class="flex justify-around mb-6">
+      <button id="tab-login" class="tab active px-4 py-2 border-b-2 border-black font-semibold">تسجيل الدخول</button>
+      <button id="tab-signup" class="tab px-4 py-2 border-b-2 border-transparent">إنشاء حساب</button>
+    </div>
 
-    <hr style="margin:20px 0; border-color:#ccc;" />
-
-    <!-- تسجيل الدخول عبر Email (Magic Link) -->
-    <input id="email-input" type="email" placeholder="البريد الإلكتروني" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:4px;" />
-    <button id="email-login" style="width:100%; padding:10px; background:#10B981; color:white; border:none; border-radius:4px; cursor:pointer;">
-      إرسال رابط تسجيل الدخول
-    </button>
-
-    <p id="status" style="margin-top:15px; color:green; min-height:20px;"></p>
+    <div id="form-container"></div>
+    <p id="message" class="text-center mt-4"></p>
   </div>
 
   <script type="module">
-    import { supabase } from '../../admin/assets/js/supabaseClient.js';
-    // GitHub Login
-    document.getElementById('github-login').addEventListener('click', async () => {
-      const { error } = await supabase.auth.signInWithOAuth({ provider: 'github' });
-      if (error) document.getElementById('status').textContent = 'خطأ: ' + error.message;
-    });
+    import { signUpWithEmail, signInWithEmail, signInWithMagicLink } from '../../admin/assets/js/auth/auth.js';
 
-    // Google Login
-    document.getElementById('google-login').addEventListener('click', async () => {
-      const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
-      if (error) document.getElementById('status').textContent = 'خطأ: ' + error.message;
-    });
+    const tabs = document.querySelectorAll('.tab');
+    const formContainer = document.getElementById('form-container');
+    const messageEl = document.getElementById('message');
 
-    // Magic Link Email Login
-    document.getElementById('email-login').addEventListener('click', async () => {
-      const email = document.getElementById('email-input').value;
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectTo = urlParams.get("redirect") || "../../index.html";
+
+    let currentTab = 'login';
+
+    function renderForm() {
+      formContainer.innerHTML = '';
+      messageEl.textContent = '';
+
+      if (currentTab === 'login') {
+        formContainer.innerHTML = `
+          <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full p-2 mb-3 border rounded"/>
+          <input type="password" id="password" placeholder="كلمة المرور" class="w-full p-2 mb-3 border rounded"/>
+          <button id="loginBtn" class="w-full bg-black text-white p-2 rounded hover:bg-gray-800">تسجيل الدخول</button>
+          <button id="magicLinkBtn" class="w-full bg-yellow-500 text-black p-2 rounded mt-2 hover:bg-yellow-400">تسجيل الدخول عبر الرابط</button>
+        `;
+        document.getElementById('loginBtn').addEventListener('click', handleLogin);
+        document.getElementById('magicLinkBtn').addEventListener('click', handleMagicLink);
+      } else {
+        formContainer.innerHTML = `
+          <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full p-2 mb-3 border rounded"/>
+          <input type="password" id="password" placeholder="كلمة المرور" class="w-full p-2 mb-3 border rounded"/>
+          <button id="signupBtn" class="w-full bg-black text-white p-2 rounded hover:bg-gray-800">إنشاء حساب</button>
+        `;
+        document.getElementById('signupBtn').addEventListener('click', handleSignUp);
+      }
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      tabs.forEach(t => t.classList.remove('border-black', 'font-semibold'));
+      if(tab==='login'){
+        document.getElementById('tab-login').classList.add('border-black','font-semibold');
+      } else {
+        document.getElementById('tab-signup').classList.add('border-black','font-semibold');
+      }
+      renderForm();
+    }
+
+    document.getElementById('tab-login').addEventListener('click', () => switchTab('login'));
+    document.getElementById('tab-signup').addEventListener('click', () => switchTab('signup'));
+
+    async function handleSignUp() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      messageEl.textContent = 'جاري المعالجة...';
+      messageEl.className = 'text-center mt-4';
+
+      try {
+        const res = await signUpWithEmail(email, password);
+        messageEl.textContent = res.message;
+        messageEl.classList.add(res.success ? 'text-green-600' : 'text-red-600');
+      } catch (err) {
+        messageEl.textContent = err.message;
+        messageEl.classList.add('text-red-600');
+      }
+    }
+
+    async function handleLogin() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      messageEl.textContent = 'جاري تسجيل الدخول...';
+
+      try {
+        const res = await signInWithEmail(email, password);
+        messageEl.textContent = res.message;
+        messageEl.className = res.success ? 'text-green-600 mt-4 text-center' : 'text-red-600 mt-4 text-center';
+        if(res.success){
+          setTimeout(()=> window.location.href = redirectTo, 1000);
+        }
+      } catch(err) {
+        messageEl.textContent = err.message;
+        messageEl.className = 'text-red-600 mt-4 text-center';
+      }
+    }
+
+    async function handleMagicLink() {
+      const email = document.getElementById('email').value.trim();
       if (!email) {
-        document.getElementById('status').textContent = 'الرجاء إدخال البريد الإلكتروني';
+        messageEl.textContent = 'يرجى إدخال البريد الإلكتروني';
+        messageEl.className = 'text-red-600 mt-4 text-center';
         return;
       }
-const { data, error } = await supabase.auth.signInWithOtp({
-  email,
-  options: {
-    emailRedirectTo: "https://emadhassan-123.github.io/digital_space" 
-  }
-});
-      if (error) document.getElementById('status').textContent = 'خطأ: ' + error.message;
-      else document.getElementById('status').textContent = 'تم إرسال رابط تسجيل الدخول إلى بريدك الإلكتروني';
-    });
+      messageEl.textContent = 'جاري إرسال الرابط...';
+
+      try {
+        const res = await signInWithMagicLink(email);
+        messageEl.textContent = res.message;
+        messageEl.className = res.success ? 'text-green-600 mt-4 text-center' : 'text-red-600 mt-4 text-center';
+      } catch(err) {
+        messageEl.textContent = err.message;
+        messageEl.className = 'text-red-600 mt-4 text-center';
+      }
+    }
+
+    renderForm();
   </script>
+
 </body>
 </html>

@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>تفاصيل البوست — مساحتي الشخصية</title>
   <meta name="description" content="عرض تفصيلي للبوست مع مقالات ذات صلة وتصميم حديث وتجربة مستخدم محسّنة">
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
-<script src="https://unpkg.com/mindmup-mapjs@0.12.0/dist/mapjs.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/mindmup-mapjs@0.12.0/dist/mapjs.css">
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -22,115 +19,122 @@
             neutral: '#0F172A',
             muted: '#6B7280',
             surface: { light: '#ffffff', dark: '#0B1220' },
-            success: '#10B981'
+            success: '#10B981',
+            gold: '#d0b16b'
           }
         }
       }
     }
   </script>
 
-  <!-- Font Awesome (بدون integrity لتجنب الخطأ) -->
+  <!-- GSAP -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    /* تأثير fadeIn للمحتوى */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
     }
-
-    @keyframes fadeOut {
-      from {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      to {
-        opacity: 0;
-        transform: translateY(10px);
-      }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
-
-    .animate-fade-in {
-      animation: fadeIn 0.3s ease-out;
-    }
-
-    .animate-fade-out {
-      animation: fadeOut 0.3s ease-in forwards;
-    }
-
-    
   </style>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
 
   <!-- Header -->
-     <header id="site-header"></header>
+  <header id="site-header"></header>
 
   <!-- Main Content -->
+  <main class="max-w-4xl mx-auto p-6 pt-28 space-y-8" id="post-container">
+    <!-- زر العودة للرئيسية -->
+    <div class="flex justify-start">
+      <a href="/index.html" class="inline-flex items-center gap-2 text-gold hover:text-yellow-400 transition">
+        <i class="fa-solid fa-arrow-left"></i> العودة للرئيسية
+      </a>
+    </div>
 
-  <main class="max-w-4xl mx-auto p-6 pt-28 space-y-10" id="post-container">
-
-    <div class="text-center py-8 text-gray-500 dark:text-gray-400" id="loading">
+    <!-- skeleton التحميل -->
+    <div id="loading" class="text-center py-8 text-gray-500 dark:text-gray-400">
       جاري التحميل...
     </div>
   </main>
-  <!-- قسم التعليقات -->
-  <section id="comments-section"
-    class="mt-10 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
-    <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">التعليقات</h2>
 
-    <!-- نموذج إضافة تعليق -->
-    <form id="comment-form" class="flex flex-col gap-3 mb-6" aria-label="نموذج إضافة تعليق" onsubmit="return false;">
-      <textarea id="comment-input" rows="4"
-        class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary dark:focus:ring-accent bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
-        placeholder="اكتب تعليقك هنا..." required></textarea>
-      <div class="flex items-center justify-between gap-4">
-
-        <!-- ملاحظة: type="button" لمنع submit الافتراضي -->
-        <button id="comment-submit" type="button"
-          class="px-5 py-2 bg-gradient-to-r from-accent to-primary text-white rounded-lg shadow hover:opacity-95 transition">
-          <span id="comment-submit-label">إرسال</span>
-          <svg id="comment-submit-spinner" class="hidden animate-spin w-4 h-4 inline-block ms-2" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-          </svg>
+  <!-- Comments Section -->
+  <section id="comments-section" class="max-w-3xl mx-auto mt-10 space-y-4">
+    <h2 class="text-2xl font-bold text-gray-200 mb-4">💬 التعليقات</h2>
+    <div id="comments-container" class="space-y-3"></div>
+    <form id="comment-form" onsubmit="return false" class="bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-700">
+      <textarea rows="3" placeholder="أضف تعليقك هنا..." 
+        class="w-full p-3 rounded-lg border border-gray-700 bg-gray-900 text-gray-200 focus:ring-2 focus:ring-yellow-400 transition"></textarea>
+      <div class="flex justify-end mt-3">
+        <button type="submit" class="bg-gold hover:bg-yellow-400 text-black px-4 py-2 rounded-lg text-sm transition">
+          إرسال التعليق
         </button>
       </div>
     </form>
-
-    <!-- قائمة التعليقات -->
-    <div id="comments-list" class="space-y-4">
-      <p class="text-gray-500 dark:text-gray-400 text-center">لا توجد تعليقات بعد. كن أول من يعلق!</p>
-    </div>
   </section>
- 
- 
+
+  <!-- Footer -->
+
+<footer class=" text-gray-200 pt-10 mt-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+
+    <!-- قسم حول الموقع -->
+    <div>
+      <h4 class="text-xl font-bold text-[#d0b16b] mb-4">مساحتي</h4>
+      <p class="text-gray-400 text-sm leading-relaxed">
+        مدونتي الشخصية التي أشارك فيها الأفكار، الموارد، المشاريع، والتدوينات التقنية.
+        هدفنا تسهيل الوصول للمعلومات بطريقة منظمة وسهلة.
+      </p>
+    </div>
+
+    <!-- روابط سريعة -->
+    <div>
+      <h4 class="text-xl font-bold text-[#d0b16b] mb-4">روابط سريعة</h4>
+      <ul class="space-y-2">
+        <li><a href="/" class="hover:text-yellow-400 transition">الرئيسية</a></li>
+        <li><a href="#categories-bar" class="hover:text-yellow-400 transition">منشوراتي</a></li>
+        <li><a href="/public/page/resources.html" class="hover:text-yellow-400 transition">مكتبة الموارد</a></li>
+        <li><a href="/public/page/contact.html" class="hover:text-yellow-400 transition">تواصل معنا</a></li>
+      </ul>
+    </div>
+
+    <!-- تواصل اجتماعي -->
+    <div>
+      <h4 class="text-xl font-bold text-[#d0b16b] mb-4">تابعنا</h4>
+      <div class="flex gap-4">
+        <a href="#" class="hover:text-yellow-400 transition"><i class="fab fa-facebook fa-lg"></i></a>
+        <a href="#" class="hover:text-yellow-400 transition"><i class="fab fa-twitter fa-lg"></i></a>
+        <a href="#" class="hover:text-yellow-400 transition"><i class="fab fa-linkedin fa-lg"></i></a>
+        <a href="#" class="hover:text-yellow-400 transition"><i class="fab fa-github fa-lg"></i></a>
+        <a href="#" class="hover:text-yellow-400 transition"><i class="fab fa-youtube fa-lg"></i></a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- حقوق الملكية -->
+  <div class="border-t border-gray-700 mt-8 pt-4 text-center text-gray-500 text-sm">
+    &copy; 2025 جميع الحقوق محفوظة لموقع <span class="text-[#d0b16b]">مساحتي</span> | تطوير <a href="https://github.com/emadah" class="hover:text-yellow-400 transition">عماد حسان</a>
+  </div>
+</footer>
   <!-- Scripts -->
-   <script type="module">
-        import { Header } from '../assets/js/header.js';
-        document.addEventListener('DOMContentLoaded', () => { Header.init(); });
-    </script>
-    
+  <script type="module">
+    import { Header } from '../assets/js/header.js';
+    document.addEventListener('DOMContentLoaded', () => { Header.init(); });
+  </script>
 
-  <script type="module" src="../../public/assets/js/post-detail.js"></script>
-  
+  <script type="module" src="../assets/js/post-detail.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-  <script type="module" src="../shared/js/theme.js"></script>
+
 </body>
-
 </html>
-
-<!-- 
-
-اريد جعل رابط الاسكربت ديناميكي بحسب ماهو محدد في صفحة app_config  
-لحل هذا المشكلة اقوم باستيراد ملف app ثم داخل الاسكربت اقوم بانشاء عنصر اسكربت 
-واعمله نوع واستدعي الرابط لداخل سمة src
--->

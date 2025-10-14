@@ -56,7 +56,7 @@ container.classList.add("whitespace-nowrap");
     const { posts } = await listPostsCached();
     renderPostsCards(postsRoot, posts);
   });
-
+ 
   // بقية الفئات
   categories.forEach(cat => {
     const btn = createCategoryButton({ id: cat.id, name: cat.name });

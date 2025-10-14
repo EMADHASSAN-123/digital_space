@@ -6,8 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>الملف الشخصي - مساحتي</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="../public/css/index.css">
-  <link rel="stylesheet" href="../public/css/header.css">
 </head>
 
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
@@ -53,10 +51,10 @@
 
   <!-- سكربتات -->
   <script type="module" >
-    import { Header } from '../public/assets/js/header.js';
+    import { Header } from '../assets/js/header.js';
     document.addEventListener('DOMContentLoaded', () => { Header.init(); });
   </script>
-  <script type="module" src="./js/profile.js" defer></script>
-<script type="module" src="./js/theme.js" defer></script>
+  <script type="module" src="../assets/js/profile.js" defer></script>
+<script type="module" src="../../shared/js/theme.js" defer></script>
 </body>
 </html>

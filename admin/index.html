@@ -220,8 +220,8 @@
             <select id="statusFilter"
               class="bg-deep-700 text-surface-light rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
               <option value="">كل الحالات</option>
-              <option value="published">منشور</option>
-              <option value="draft">مسودة</option>
+              <option value="true">منشور</option>
+              <option value="false">مسودة</option>
             </select>
             <button id="newPostBtn"
               class="bg-brand-500 text-surface-light rounded-lg px-4 py-2 flex items-center hover:bg-brand-600 transition">
@@ -294,7 +294,7 @@
             </button>
           </div>
 
-
+ 
           <!-- Resource Form (hidden by default) -->
           <div id="resourceFormContainer" class="hidden bg-deep-700 rounded-xl2 p-4 mb-6">
             <h3 class="text-lg text-surface-light font-bold mb-4">إضافة مورد</h3>
@@ -453,6 +453,7 @@
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     });
   </script>
+
 
 
 </body>

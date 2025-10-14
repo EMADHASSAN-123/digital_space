@@ -46,11 +46,11 @@ export async function getResources() {
     return [];
   }
 }
-
+ 
 // إضافة مورد جديد (يتطلب مصادقة + Admin)
 export async function addResource(resource) {
   try {
-    const data = await request(`${API_BASE}`+"add-resource", "POST", resource, true);
+    const data = await request(`${API_BASE}`+"add-resourse", "POST", resource, true);
     showSuccess("تمت إضافة المورد بنجاح");
     return data.resource;
   } catch (err) {

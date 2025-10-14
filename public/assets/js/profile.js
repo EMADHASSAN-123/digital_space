@@ -1,4 +1,4 @@
-import { getCurrentUser, signOut } from "../../admin/assets/js/auth/auth.js";
+import { getCurrentUser, signOut } from "../../../admin/assets/js/auth/auth.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const user = await getCurrentUser();

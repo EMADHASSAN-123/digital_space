@@ -13,7 +13,7 @@
 //   post_detail:      "https://emadhassan-123.github.io/digital_space/public/assets/js/post-detail.js",
 //   header:           "https://emadhassan-123.github.io/digital_space/public/assets/js/header.js",
 //   POST_EDITOR :     "https://emadhassan-123.github.io/digital_space/admin/assets/js/features/post-editor.js",
-// };
+// }; 
 export const APP_CONFIG = {
   INDEX_PAGE:'      https://emadhassan-123.github.io/digital_space/index.html',
   POSTS_TABLE: 'posts',

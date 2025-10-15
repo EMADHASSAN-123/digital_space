@@ -3,7 +3,7 @@ import { supabase } from '../supabaseClient.js';
 import { APP_CONFIG } from '../config/appConfig.js';
 export async function protectAdminPage(redirectIfLoggedOut = true) {
   const { data: { session } } = await supabase.auth.getSession();
- 
+  
   if (!session && redirectIfLoggedOut) {
     // إذا لم يكن المستخدم مسجّل الدخول، تحويله لصفحة login
     window.location.href = `${APP_CONFIG.LOGIN_PAGE}`;
@@ -17,6 +17,6 @@ export async function protectAdminPage(redirectIfLoggedOut = true) {
 export async function redirectIfLoggedIn() {
   const { data: { session } } = await supabase.auth.getSession();
   if (session) {
-    window.location.href = `${APP_CONFIG.LOGIN_PAGE}`;
+    window.location.href = `${APP_CONFIG.INDEX_PAGE}`;
   }
 }

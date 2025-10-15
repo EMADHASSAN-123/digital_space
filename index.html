@@ -164,6 +164,43 @@
       transition: all 0.3s ease;
     }
 
+    .about-masaha {
+  display: flex;
+  flex-direction: row; /* افتراضيًا على سطح المكتب */
+  align-items: center;
+  gap: 3rem;
+  text-align: left;
+}
+.about-masaha h2 {
+  font-size: 2.5rem;
+  color: #d0b16b;
+  font-weight: 800;
+}
+
+.about-masaha p {
+  color: #e6e9ef;
+  line-height: 1.7;
+}
+
+   @media (max-width: 720px) {
+  .about-masaha {
+    flex-direction: column; /* ترتيب عمودي */
+    text-align: center;     /* توسيط النص */
+    gap: 2rem;
+    padding: 2rem 1rem;
+  }
+
+  .about-masaha .flex-1 {
+    text-align: center;
+  }
+
+  .about-masaha img {
+    margin-bottom: 1.5rem;
+    width: 80%; /* ضبط حجم الصورة */
+    max-width: 320px;
+  }
+}
+
 
     @media (max-width: 720px) {
       svg text {
@@ -468,6 +505,22 @@
         delay: 2.5
       });
     });
+    // تحريك about-masaha مع تحسين الهاتف
+const aboutSection = document.querySelector(".about-masaha");
+
+// ضبط start بناءً على حجم الشاشة
+let startPoint = window.innerWidth <= 720 ? "top 90%" : "top 80%";
+
+gsap.from(aboutSection, {
+  scrollTrigger: {
+    trigger: aboutSection,
+    start: startPoint,
+  },
+  opacity: 0,
+  y: window.innerWidth <= 720 ? 30 : 60, // أقل حركة على الهاتف
+  duration: 1,
+  ease: "power3.out"
+});
 
     // بطاقات مساحة فكرية عند التمرير
     gsap.utils.toArray('.feature-card').forEach((card, i) => {

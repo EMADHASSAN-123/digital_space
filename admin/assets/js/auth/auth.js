@@ -58,7 +58,7 @@ export async function signUpWithEmail(email, password) {
     user: data.user ?? null,
   };
 }
-
+ 
 /* ---------- تسجيل الدخول عبر البريد ---------- */
 export async function signInWithEmail(email, password) {
   if (!email || !password) throw new Error("البريد الإلكتروني وكلمة المرور مطلوبة");

@@ -8,6 +8,10 @@
 </head>
 <body class="bg-gray-100 flex justify-center items-center h-screen">
 
+
+    <header id="site-header"></header>
+
+
   <div class="bg-white p-8 rounded-xl shadow-lg w-96">
     <h2 class="text-center text-2xl font-bold mb-6">مساحة</h2>
 
@@ -22,7 +26,7 @@
 
   <script type="module">
     import { signUpWithEmail, signInWithEmail, signInWithMagicLink } from '../../admin/assets/js/auth/auth.js';
-
+ 
     const tabs = document.querySelectorAll('.tab');
     const formContainer = document.getElementById('form-container');
     const messageEl = document.getElementById('message');
@@ -124,6 +128,12 @@
 
     renderForm();
   </script>
+  <script type="module">
+    import { Header } from './public/assets/js/header.js';
+    document.addEventListener('DOMContentLoaded', () => { Header.init(); });
+  </script>
 
 </body>
 </html>
+
+

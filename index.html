@@ -2,34 +2,17 @@
 <html lang="ar" dir="rtl">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>مساحة — مدونة رقمية لتدوين المعرفة ومشاركة الموارد</title>
   <meta name="description"
     content="مساحة هي مدونة رقمية شخصية لتدوين المعرفة العلمية والمكتسبة بطرق تفاعلية وباسلوب مبتكر, شرح المفاهيم التقنية، ومشاركة الموارد بطريقة بصرية ممتعة. اكتشف مقالات، أدوات، ومشاريع رقمية.">
- <!-- Google Fonts Cairo -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" as="style">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CSS -->
+  <!-- Tailwind CSS (browser build) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" defer></script>
 
-  <!-- Google Fonts Cairo -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-  <!-- GSAP -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  
 
   <style>
     :root {
@@ -133,13 +116,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.3s ease;
+      transition: transform 0.25s cubic-bezier(.2,.9,.2,1), box-shadow 0.25s ease, background 0.25s ease;
       cursor: pointer;
+      will-change: transform, box-shadow;
     }
 
     .icon-box:hover {
-      transform: translateY(-10px) scale(1.15) rotate(5deg);
-      box-shadow: 0 20px 45px rgba(208, 177, 107, 0.3);
+      transform: translateY(-8px) scale(1.08);
+      box-shadow: 0 16px 36px rgba(208, 177, 107, 0.22);
       background: rgba(208, 177, 107, 0.08);
     }
 
@@ -153,56 +137,94 @@
       color: #dfe7ee;
     }
 
-    /* قسم مساحة فكرية */
+    /* قسم مساحة فكرية - الشبكة الديناميكية */
+    .features-section .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2.5rem;
+    }
+
     .feature-card {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: #111111;
+      padding: 2rem;
+      border-radius: 1rem;
+      transform: translateY(0);
+      transition: transform 0.28s cubic-bezier(.2,.9,.2,1), box-shadow 0.28s ease;
+      text-align: center;
+      will-change: transform, opacity;
+      /* تقليل الضغط على GPU: لا نستخدم rotate ثقيل */
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(208, 177, 107, 0.12);
     }
 
     .icon-circle {
-      transition: all 0.3s ease;
+      transition: transform 0.28s cubic-bezier(.2,.9,.2,1), box-shadow 0.28s ease;
+      will-change: transform, box-shadow;
+    }
+
+    /* تقليل الظلال والتحريك على الأجهزة التي لا تدعم hover (الجوال عادة) */
+    @media (hover: none), (pointer: coarse) {
+      .icon-box,
+      .feature-card,
+      .icon-circle {
+        transition: none;
+        transform: none !important;
+        box-shadow: none !important;
+      }
+
+      .icon-box:hover,
+      .feature-card:hover {
+        transform: none;
+      }
+
+      /* تخفيف الخط الدرامي في svg على الموبايل */
+      svg text {
+        filter: none;
+      }
     }
 
     .about-masaha {
-  display: flex;
-  flex-direction: row; /* افتراضيًا على سطح المكتب */
-  align-items: center;
-  gap: 3rem;
-  text-align: left;
-}
-.about-masaha h2 {
-  font-size: 2.5rem;
-  color: #d0b16b;
-  font-weight: 800;
-}
+      display: flex;
+      flex-direction: row; /* افتراضيًا على سطح المكتب */
+      align-items: center;
+      gap: 3rem;
+      text-align: left;
+    }
 
-.about-masaha p {
-  color: #e6e9ef;
-  line-height: 1.7;
-}
+    .about-masaha h2 {
+      font-size: 2.5rem;
+      color: #d0b16b;
+      font-weight: 800;
+    }
 
-   @media (max-width: 720px) {
-  .about-masaha {
-    flex-direction: column; /* ترتيب عمودي */
-    text-align: center;     /* توسيط النص */
-    gap: 2rem;
-    padding: 2rem 1rem;
-  }
-
-  .about-masaha .flex-1 {
-    text-align: center;
-  }
-
-  .about-masaha img {
-    margin-bottom: 1.5rem;
-    width: 80%; /* ضبط حجم الصورة */
-    max-width: 320px;
-  }
-}
-
+    .about-masaha p {
+      color: #e6e9ef;
+      line-height: 1.7;
+    }
 
     @media (max-width: 720px) {
+      .about-masaha {
+        flex-direction: column; /* ترتيب عمودي */
+        text-align: center; /* توسيط النص */
+        gap: 2rem;
+        padding: 2rem 1rem;
+      }
+
+      .about-masaha .flex-1 {
+        text-align: center;
+      }
+
+      .about-masaha img {
+        margin-bottom: 1.5rem;
+        width: 80%; /* ضبط حجم الصورة */
+        max-width: 320px;
+      }
+
       svg text {
         font-size: 140px;
       }
@@ -210,6 +232,17 @@
       .icon-box {
         width: 80px;
         height: 80px;
+      }
+    }
+
+    /* prefers-reduced-motion: احترام تفضيلات المستخدم */
+    @media (prefers-reduced-motion: reduce) {
+      .icon-box,
+      .feature-card,
+      .icon-circle,
+      svg text {
+        transition: none !important;
+        animation: none !important;
       }
     }
   </style>
@@ -256,11 +289,13 @@
   </div>
 
   <!-- قسم مساحة فكرية -->
-  <section class="features-section py-24  text-white relative z-10">
+  <section class="features-section py-24 text-white relative z-10">
     <div class="container mx-auto px-6">
       <h2 class="text-4xl font-bold text-center mb-16 text-yellow-500">مساحة فكرية</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
 
+      <!-- استخدمت grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <!-- Note: CSS أعلاه يطبق الشبكة الديناميكية عبر .features-section .grid -->
         <!-- بطاقة 1 -->
         <div
           class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center">
@@ -312,34 +347,23 @@
             منصة تتيح التواصل والتعلّم المشترك في بيئة داعمة ومفتوحة للجميع.
           </p>
         </div>
-
       </div>
     </div>
   </section>
 
-  <!-- قسم مساحة تدوين -->
+  <!-- بقية الصفحة كما كانت... -->
   <section id="blog-section" class="relative z-10 py-24">
     <div class="container mx-auto px-6 text-center">
-
-      <!-- عنوان -->
       <h2 class="text-4xl font-bold mb-10 text-[#d0b16b] drop-shadow-lg">
         مساحة تدوين
       </h2>
-
-      <!-- شريط الفئات -->
-      <div id="categories-bar" class="flex flex-wrap justify-center gap-4 mb-12    transition-all duration-500"></div>
-
-      <!-- البوستات الأخيرة -->
+      <div id="categories-bar" class="flex flex-wrap justify-center gap-4 mb-12 transition-all duration-500"></div>
       <div id="latest-posts" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"></div>
     </div>
   </section>
-  <!-- قسم موارد مساحة -->
-  <!-- قسم موارد مساحة -->
-  <section id="resources-section"
-    class="relative py-20  from-black via-gray-950 to-black text-gray-100 overflow-hidden">
-    <div class="container mx-auto px-6 lg:px-12 text-center">
 
-      <!-- العنوان الرئيسي -->
+  <section id="resources-section" class="relative py-20 from-black via-gray-950 to-black text-gray-100 overflow-hidden">
+    <div class="container mx-auto px-6 lg:px-12 text-center">
       <div class="mb-12" id="resources-heading">
         <h2 class="text-4xl md:text-5xl font-extrabold text-[#d0b16b] mb-4">موارد مساحة</h2>
         <p class="text-gray-400 max-w-2xl mx-auto leading-relaxed">
@@ -347,11 +371,7 @@
           لتساعدك في رحلتك التقنية والمعرفية.
         </p>
       </div>
-
-      <!-- قائمة الموارد -->
       <div id="resources-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-
-      <!-- زر زيارة المكتبة -->
       <div class="mt-10" id="visit-library">
         <a href="/public/page/resources.html"
           class="inline-flex items-center gap-3 px-6 py-3 bg-[#d0b16b] text-black font-semibold rounded-2xl hover:bg-yellow-400 transition-all shadow-lg hover:shadow-yellow-400/40">
@@ -365,18 +385,12 @@
     </div>
   </section>
 
-
-  <!-- قسم عن مساحة -->
-  <section class="about-masaha relative z-10 py-24 px-6  backdrop-blur-lg rounded-3xl max-w-7xl mx-auto my-16">
+  <section class="about-masaha relative z-10 py-24 px-6 backdrop-blur-lg rounded-3xl max-w-7xl mx-auto my-16">
     <div class="container mx-auto flex flex-col lg:flex-row items-center gap-12">
-
-      <!-- صورة أو أيقونة -->
-      <div class="flex-shrink-0">
+       <div class="flex-shrink-0">
         <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80"
           alt="مساحة" class="rounded-3xl shadow-2xl w-72 lg:w-96 object-cover">
       </div>
-
-      <!-- المحتوى النصي -->
       <div class="flex-1 text-center lg:text-left space-y-6">
         <h2 class="text-4xl font-extrabold text-[#d0b16b]">عن مساحة</h2>
         <p class="text-gray-200 text-lg leading-relaxed">
@@ -400,8 +414,6 @@
     </div>
   </section>
 
-  <!-- قسم مشاريعي وتجارب عملية -->
-  <!-- قسم مشاريعي -->
   <section class="projects-section py-24 relative z-10">
     <div class="container mx-auto px-6">
       <h2 class="text-4xl font-bold text-center mb-12 text-yellow-500">مشاريع مساحة على GitHub</h2>
@@ -411,8 +423,6 @@
 
   <footer class=" text-gray-200 pt-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-
-      <!-- قسم حول الموقع -->
       <div>
         <h4 class="text-xl font-bold text-[#d0b16b] mb-4">مساحتي</h4>
         <p class="text-gray-400 text-sm leading-relaxed">
@@ -421,7 +431,6 @@
         </p>
       </div>
 
-      <!-- روابط سريعة -->
       <div>
         <h4 class="text-xl font-bold text-[#d0b16b] mb-4">روابط سريعة</h4>
         <ul class="space-y-2">
@@ -432,7 +441,6 @@
         </ul>
       </div>
 
-      <!-- تواصل اجتماعي -->
       <div>
         <h4 class="text-xl font-bold text-[#d0b16b] mb-4">تابعنا</h4>
         <div class="flex gap-4">
@@ -444,198 +452,123 @@
               class="fab fa-github fa-lg"></i></a>
         </div>
       </div>
-
     </div>
 
-    <!-- حقوق الملكية -->
     <div class="border-t border-gray-700 mt-8 pt-4 text-center text-gray-500 text-sm">
       &copy; 2025 جميع الحقوق محفوظة لموقع <span class="text-[#d0b16b]">مساحتي</span> | تطوير <a
         href="https://github.com/emadah" class="hover:text-yellow-400 transition">عماد حسان</a>
     </div>
   </footer>
 
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 
-
-
-  <!-- سكربت التحريك -->
   <script>
     lucide.createIcons();
 
-    // الهيرو
-    window.addEventListener('load', () => {
-      const text = document.getElementById('masahaText');
-      const length = text.getComputedTextLength();
+    // GSAP: responsive entrance animation
+    gsap.registerPlugin(ScrollTrigger);
 
-      text.style.strokeDasharray = length;
-      text.style.strokeDashoffset = length;
+    // Helper: determine "mobile" - matches our CSS breakpoint
+    const isMobile = window.matchMedia('(max-width:720px)').matches;
 
-      gsap.to(text, {
-        strokeDashoffset: 0,
-        duration: 2.5,
-        ease: "power2.out",
-        onUpdate() {
-          const progress = gsap.getProperty(text, 'strokeDashoffset') / length;
-          const wave = Math.sin(progress * Math.PI * 8) * 10;
-          const depth = Math.cos(progress * Math.PI * 4) * 6;
-          text.setAttribute('y', 220 + wave + depth);
-          text.setAttribute('stroke', `hsl(${progress * 360}, 80%, 50%)`);
-        },
-        onComplete: () => {
-          gsap.to(text, { repeat: -1, yoyo: true, duration: 1.2, attr: { strokeWidth: 5 }, ease: "sine.inOut" });
-          for (let i = 0; i < 75; i++) {
-            const particle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            particle.setAttribute("r", 3 + Math.random() * 3);
-            particle.setAttribute("fill", "#d0b16b");
-            const svg = document.querySelector('.logo-svg');
-            svg.appendChild(particle);
-            gsap.fromTo(particle,
-              { cx: 600, cy: 210, opacity: 1 },
-              { cx: 600 + (Math.random() - 0.5) * 300, cy: 210 + (Math.random() - 0.5) * 300, opacity: 0, duration: 1.5 + Math.random(), ease: "power2.out", onComplete: () => svg.removeChild(particle) }
-            );
-          }
-        }
-      });
+    // animation parameters tuned per device
+    const animDuration = isMobile ? 0.36 : 0.6; // shorter on mobile
+    const animEase = isMobile ? "power1.out" : "power3.out";
+    const baseDelay = isMobile ? 0.06 : 0.18; // smaller stagger on mobile
 
-      // أيقونات الهيرو
-      gsap.from('.icon-box', {
-        y: 30,
-        stagger: 0.15,
-        duration: 1.2,
-        ease: "power3.out",
-        delay: 2.5
-      });
-    });
-    // تحريك about-masaha مع تحسين الهاتف
-const aboutSection = document.querySelector(".about-masaha");
+    // select cards
+    const cards = gsap.utils.toArray('.feature-card');
 
-// ضبط start بناءً على حجم الشاشة
-let startPoint = window.innerWidth <= 720 ? "top 90%" : "top 80%";
-
-gsap.from(aboutSection, {
-  scrollTrigger: {
-    trigger: aboutSection,
-    start: startPoint,
-  },
-  opacity: 0,
-  y: window.innerWidth <= 720 ? 30 : 60, // أقل حركة على الهاتف
-  duration: 1,
-  ease: "power3.out"
-});
-
-    // بطاقات مساحة فكرية عند التمرير
-    gsap.utils.toArray('.feature-card').forEach((card, i) => {
-      gsap.fromTo(card,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          ease: "power3.out",
-          delay: i * 0.2,
-          scrollTrigger: {
-            trigger: card,
-            start: "top 80%",
-            toggleActions: "play none none none"
-          }
-        }
-      );
+    // Use ScrollTrigger.batch for better performance on many elements (aggregates events)
+    ScrollTrigger.batch('.feature-card', {
+      onEnter: batch => {
+        batch.forEach((card, i) => {
+          gsap.fromTo(card, {
+            opacity: 0,
+            y: 24
+          }, {
+            opacity: 1,
+            y: 0,
+            duration: animDuration,
+            ease: animEase,
+            delay: i * baseDelay,
+            overwrite: true
+          });
+        });
+      },
+      start: "top 85%",
+      // To reduce scroll-trigger-related work on small devices, disable complex triggers on coarse pointers
+      onEnterBack: batch => {
+        // same as onEnter for simplicity
+        batch.forEach((card, i) => {
+          gsap.fromTo(card, {
+            opacity: 0,
+            y: 24
+          }, {
+            opacity: 1,
+            y: 0,
+            duration: animDuration,
+            ease: animEase,
+            delay: i * baseDelay,
+            overwrite: true
+          });
+        });
+      },
+      // batch max size - limits number of animations triggered at once
+      batchMax: isMobile ? 3 : 6
     });
 
-    // توهج الأيقونات داخل البطاقات
+    // Hover effects for icon-circle: scaled but lightweight; disabled on touch devices
     document.querySelectorAll('.feature-card').forEach(card => {
       const icon = card.querySelector('.icon-circle');
-      card.addEventListener('mouseenter', () => {
-        gsap.to(icon, { scale: 1.2, boxShadow: "0 0 25px rgba(208,177,107,0.7)", duration: 0.3, ease: "power2.out" });
-      });
-      card.addEventListener('mouseleave', () => {
-        gsap.to(icon, { scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)", duration: 0.3, ease: "power2.out" });
-      });
+      if (!icon) return;
+
+      // if device supports hover, add enter/leave
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        card.addEventListener('mouseenter', () => {
+          gsap.to(icon, {
+            scale: 1.12,
+            boxShadow: "0 8px 20px rgba(208,177,107,0.25)",
+            duration: 0.26,
+            ease: "power2.out"
+          });
+        });
+        card.addEventListener('mouseleave', () => {
+          gsap.to(icon, {
+            scale: 1,
+            boxShadow: "0 0 0 rgba(0,0,0,0)",
+            duration: 0.26,
+            ease: "power2.in"
+          });
+        });
+      } else {
+        // On touch devices: keep icon at normal scale (no heavy effect)
+        icon.style.transform = "translateZ(0)"; // hint for GPU compositing without heavy animation
+      }
     });
+
+    // Optional: reduce GSAP ScrollTrigger update frequency on very small screens to save CPU
+    if (isMobile) {
+      ScrollTrigger.defaults({ fastScrollEnd: true });
+    }
+
+    // Respect prefers-reduced-motion by disabling animations if requested
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.globalTimeline.clear();
+      ScrollTrigger.getAll().forEach(st => st.disable());
+    }
   </script>
 
   <script type="module">
     import { initCategoriesBar } from "./shared/js/ui/categories-bar.js";
     import { renderLatestResources } from "./shared/js/ui/resourcesSidebar.js";
-
-
     document.addEventListener("DOMContentLoaded", () => {
       initCategoriesBar("categories-bar", "latest-posts");
       renderLatestResources("resources-list", 5);
-
-      // تحريك العنوان والفئات والبطاقات عبر GSAP
-      gsap.from("#blog-section h2", {
-        duration: 1.2,
-        y: 60,
-        opacity: 0,
-        ease: "power3.out",
-      });
-
-      gsap.from("#categories-bar", {
-        duration: 1.2,
-
-        y: 40,
-        delay: 0.4,
-        ease: "power2.out",
-      });
-
-      gsap.from("#latest-posts > article", {
-        duration: 1.1,
-        y: 50,
-        opacity: 0,
-        stagger: 0.15,
-        delay: 0.7,
-        ease: "power3.out",
-      });
     });
 
-    gsap.from(".about-masaha", {
-      scrollTrigger: {
-        trigger: ".about-masaha",
-        start: "top 80%",
-      },
-      opacity: 0,
-      y: 60,
-      duration: 1.2,
-      ease: "power3.out"
-    });
-
-    gsap.from("#resources-heading", {
-      opacity: 0,
-      y: 60,
-      duration: 1.2,
-      scrollTrigger: {
-        trigger: "#resources-heading",
-        start: "top 80%",
-      }
-    });
-
-    gsap.from("#resources-list > div", {
-      opacity: 0,
-      y: 60,
-      duration: 1,
-      stagger: 0.2,
-      scrollTrigger: {
-        trigger: "#resources-list",
-        start: "top 80%",
-      }
-    });
-
-    gsap.from("#visit-library", {
-      opacity: 0,
-      scale: 0.9,
-      duration: 1,
-      delay: 0.3,
-      scrollTrigger: {
-        trigger: "#visit-library",
-        start: "top 90%",
-      }
-
-
-
-    });
-
-
-    gsap.registerPlugin(ScrollTrigger);
     const languageIcons = {
       "JavaScript": "fa-brands fa-js",
       "HTML": "fa-brands fa-html5",
@@ -681,16 +614,16 @@ gsap.from(aboutSection, {
         `;
           container.appendChild(card);
 
-          // تأثير GSAP عند ظهور البطاقة
+          // تأثير GSAP عند ظهور البطاقة (خفيف)
           gsap.from(card, {
             scrollTrigger: {
               trigger: card,
               start: "top 85%",
             },
             opacity: 0,
-            y: 50,
-            duration: 0.8,
-            delay: index * 0.1,
+            y: 30,
+            duration: 0.6,
+            delay: index * 0.08,
             ease: "power3.out"
           });
         });
@@ -704,12 +637,10 @@ gsap.from(aboutSection, {
     // استدعاء الدالة
     renderGitHubProjects("projects-list", "EMADHASSAN-123", 6); // ضع اسم حسابك
   </script>
-
   <script type="module">
     import { Header } from './public/assets/js/header.js';
     document.addEventListener('DOMContentLoaded', () => { Header.init(); });
   </script>
-
 </body>
 
 </html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>مساحة — مدونة رقمية لتدوين المعرفة ومشاركة الموارد</title>
+  <meta name="description"
+    content="مساحة هي مدونة رقمية شخصية لتدوين المعرفة العلمية والمكتسبة بطرق تفاعلية وباسلوب مبتكر, شرح المفاهيم التقنية، ومشاركة الموارد بطريقة بصرية ممتعة. اكتشف مقالات، أدوات، ومشاريع رقمية." />
+  <!-- ===== Fonts: non-blocking load ===== -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" as="style" onload="this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet"></noscript>
+
+  <!-- ===== External libs (defer to avoid render-blocking) ===== -->
+  <!-- Tailwind (browser build) kept for convenience; defer evaluation -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" defer></script>
+  <!-- GSAP core + ScrollTrigger (defer) -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
+  <!-- Lucide icons (defer) -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+  <!-- FontAwesome (CSS) - kept but external; if perf-critical, replace with inline SVG icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+  <!-- ===== Critical styles (inline, minimal) ===== -->
+  <style>
+    :root {
+      --accent: #d0b16b;
+      --glow: rgba(208, 177, 107, 0.18);
+      --bg1: #071226;
+      --bg2: #02040a;
+      --text: #e6e9ef;
+      --muted: #bfc9d3;
+    }
+
+    html,body{height:100%;margin:0;font-family:'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;background:radial-gradient(ellipse at center,var(--bg1) 0%,var(--bg2) 70%);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+
+    /* container utilities (kept minimal to avoid reliance on Tailwind for critical layout) */
+    .container{max-width:1200px;margin-inline:auto;padding-inline:1rem}
+    header#site-header{height:64px;display:flex;align-items:center;padding-inline:1rem}
+
+    /* stars background - use progressive images (small first) */
+    .stars-bg{position:fixed;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:.28;z-index:0;pointer-events:none;filter:blur(2px) brightness(.7);will-change:opacity,filter}
+
+    /* Hero */
+    .hero-wrap{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:3rem 1rem}
+    .logo-svg{width:min(1200px,90%);height:auto;display:block;margin-inline:auto;overflow:visible}
+    svg text{font-family:'Cairo', sans-serif;font-weight:900;font-size:180px;fill:transparent;stroke:var(--accent);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill;filter:drop-shadow(0 0 15px rgba(208,177,107,.25))}
+    .hero-sub{margin-top:1rem;color:var(--text);opacity:.95;font-size:1.2rem;max-width:900px}
+
+    /* icons row */
+    .icons-row{margin-top:2rem;display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;z-index:1}
+    .icon-wrap{display:flex;flex-direction:column;align-items:center;gap:.5rem;color:#fff;opacity:.95}
+    .icon-box{width:120px;height:120px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);box-shadow:0 8px 22px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;transition:transform .3s ease,box-shadow .3s ease,background .3s ease;cursor:pointer;will-change:transform}
+    .icon-box:hover{transform:translateY(-10px) scale(1.12);box-shadow:0 20px 45px rgba(208,177,107,.28);background:rgba(208,177,107,.08)}
+    .icon-label{font-size:.9rem;color:#dfe7ee}
+
+    /* Feature cards */
+    .features-section{padding-block:6rem;position:relative;z-index:1}
+    .features-grid{display:grid;gap:2.5rem;grid-template-columns:repeat(4,1fr)}
+    .feature-card{opacity:0;transform:translateY(40px);transition:transform .35s ease,opacity .35s ease}
+    .feature-card .icon-circle{transition:transform .25s ease,box-shadow .25s ease}
+
+    /* responsiveness */
+    @media (max-width:1024px){.features-grid{grid-template-columns:repeat(2,1fr)}svg text{font-size:140px}.icon-box{width:96px;height:96px}}
+    @media (max-width:640px){.features-grid{grid-template-columns:1fr}.hero-sub{font-size:1rem}.icon-box{width:80px;height:80px}}
+  </style>
+</head>
+
+<body>
+  <header id="site-header" class="container" aria-label="رأس الموقع">
+    <a href="/" style="color:var(--accent);font-weight:700;font-size:1.05rem;text-decoration:none">مساحة</a>
+  </header>
+
+  <!-- Progressive background: small placeholder then upgrade via JS -->
+  <div id="starsBg" class="stars-bg" aria-hidden="true" style="background-image:url('public/images/photo-1462331940025-496dfbfc7564_smallphoto-1462331940025-496dfbfc7564.webp');"></div>
+
+  <!-- HERO -->
+  <div class="hero-wrap">
+    <svg class="logo-svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <text id="masahaText" x="50%" y="55%" text-anchor="middle" dominant-baseline="middle">مساحة</text>
+    </svg>
+
+    <p class="hero-sub">فضاء رقمي حر لتدوين الأفكار، شرح المفاهيم، ومشاركة الموارد — بطريقة بصرية وممتعة.</p>
+
+    <div class="icons-row" aria-hidden="true">
+      <div class="icon-wrap" title="المرونة">
+        <div class="icon-box p-4 rounded-full" data-ic="maximize-2"><i data-lucide="maximize-2" class="text-[#d0b16b] w-8 h-8"></i></div>
+        <div class="icon-label">المرونة</div>
+      </div>
+
+      <div class="icon-wrap" title="البساطة">
+        <div class="icon-box p-4 rounded-full" data-ic="layout"><i data-lucide="layout" class="text-[#d0b16b] w-8 h-8"></i></div>
+        <div class="icon-label">البساطة</div>
+      </div>
+
+      <div class="icon-wrap" title="التقنية">
+        <div class="icon-box p-4 rounded-full" data-ic="cpu"><i data-lucide="cpu" class="text-[#d0b16b] w-8 h-8"></i></div>
+        <div class="icon-label">التقنية</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features-section text-white relative z-10">
+    <div class="container">
+      <h2 class="text-4xl font-bold text-center mb-16 text-yellow-500">مساحة فكرية</h2>
+      <div class="features-grid" id="featuresGrid">
+        <div class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg text-center">
+          <div class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
+            <i data-lucide="code-2" class="text-yellow-500 w-10 h-10"></i>
+          </div>
+          <h3 class="text-2xl font-semibold mb-3">نشر المعرفة التقنية</h3>
+          <p class="text-gray-400 leading-relaxed">مقالات وأفكار حول تصميم الويب، التطوير، وأدوات التقنية الحديثة بطريقة مبسطة وجمالية.</p>
+        </div>
+
+        <div class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg text-center">
+          <div class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
+            <i data-lucide="brain" class="text-yellow-500 w-10 h-10"></i>
+          </div>
+          <h3 class="text-2xl font-semibold mb-3">مساحة للتفكير الرقمي</h3>
+          <p class="text-gray-400 leading-relaxed">تأملات في كيفية بناء أفكار ومشاريع رقمية تعكس هويتنا بصدق وبساطة.</p>
+        </div>
+
+        <div class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg text-center">
+          <div class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
+            <i data-lucide="book-open" class="text-yellow-500 w-10 h-10"></i>
+          </div>
+          <h3 class="text-2xl font-semibold mb-3">تجارب ودروس شخصية</h3>
+          <p class="text-gray-400 leading-relaxed">تدوينات توثق الرحلة التعليمية والمهنية بكل ما فيها من نجاحات وتحديات.</p>
+        </div>
+
+        <div class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg text-center">
+          <div class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
+            <i data-lucide="users" class="text-yellow-500 w-10 h-10"></i>
+          </div>
+          <h3 class="text-2xl font-semibold mb-3">تفاعل ومشاركة</h3>
+          <p class="text-gray-400 leading-relaxed">منصة تتيح التواصل والتعلّم المشترك في بيئة داعمة ومفتوحة للجميع.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section id="blog-section" class="relative z-10 py-24">
+    <div class="container text-center">
+      <h2 class="text-4xl font-bold mb-10 text-[#d0b16b] drop-shadow-lg">مساحة تدوين</h2>
+      <div id="categories-bar" class="flex flex-wrap justify-center gap-4 mb-12 transition-all duration-500"></div>
+      <div id="latest-posts" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"></div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section id="resources-section" class="relative py-20 from-black via-gray-950 to-black text-gray-100 overflow-hidden">
+    <div class="container text-center lg:px-12">
+      <div class="mb-12" id="resources-heading">
+        <h2 class="text-4xl md:text-5xl font-extrabold text-[#d0b16b] mb-4">موارد مساحة</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto leading-relaxed">مجموعة من الأدوات والمراجع الرقمية التي شاركها <span class="text-[#d0b16b] font-semibold">مساحة</span> لتساعدك في رحلتك التقنية والمعرفية.</p>
+      </div>
+
+      <div id="resources-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+
+      <div class="mt-10" id="visit-library">
+        <a href="/public/page/resources.html" class="inline-flex items-center gap-3 px-6 py-3 bg-[#d0b16b] text-black font-semibold rounded-2xl hover:bg-yellow-400 transition-all shadow-lg hover:shadow-yellow-400/40">
+          <span>زيارة المكتبة</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about-masaha relative z-10 py-24 px-6 backdrop-blur-lg rounded-3xl max-w-7xl mx-auto my-16">
+    <div class="container flex flex-col lg:flex-row items-center gap-12">
+      <div class="flex-shrink-0">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80" alt="مساحة" class="rounded-3xl shadow-2xl w-72 lg:w-96 object-cover" loading="lazy">
+      </div>
+      <div class="flex-1 text-center lg:text-left space-y-6">
+        <h2 class="text-4xl font-extrabold text-[#d0b16b]">عن مساحة</h2>
+        <p class="text-gray-200 text-lg leading-relaxed">"مساحة" هي مرايتي الرقمية ,أشارك معرفتي العلمية حول المواضيع التقنية التي لطالما وجدت صعوبة في استيعابها، وأوفر موارد تساعد أي شخص على التعلم والإبداع بطريقة ممتعة وبصرية</p>
+        <p class="text-gray-400 text-base leading-relaxed">قمت بانشاء هذه المساحة لتكون فضاء رقمي حر للتدوين والمشاركة والاقتراحات، تجمع بين المعرفة العملية والشخصية في مكان واحد. اشترك في مساحة لتكتشف العالم الرقمي بطريقة جديدة.</p>
+        <a href="/public/page/about.html" class="inline-flex items-center gap-2 px-6 py-3 bg-[#d0b16b] text-black font-semibold rounded-2xl hover:bg-yellow-400 transition shadow-md">تعرف على مساحة <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="projects-section py-24 relative z-10">
+    <div class="container">
+      <h2 class="text-4xl font-bold text-center mb-12 text-yellow-500">مشاريع مساحة على GitHub</h2>
+      <div id="projects-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="text-gray-200 pt-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+        <h4 class="text-xl font-bold text-[#d0b16b] mb-4">مساحتي</h4>
+        <p class="text-gray-400 text-sm leading-relaxed">مدونتي الشخصية التي أشارك فيها الأفكار، الموارد، المشاريع، والتدوينات التقنية. هدفنا تسهيل الوصول للمعلومات بطريقة منظمة وسهلة.</p>
+      </div>
+
+      <div>
+        <h4 class="text-xl font-bold text-[#d0b16b] mb-4">روابط سريعة</h4>
+        <ul class="space-y-2">
+          <li><a href="/" class="hover:text-yellow-400 transition">الرئيسية</a></li>
+          <li><a href="#categories-bar" class="hover:text-yellow-400 transition">منشوراتي</a></li>
+          <li><a href="/public/page/resources.html" class="hover:text-yellow-400 transition">مكتبة الموارد</a></li>
+          <li><a href="/public/page/contact.html" class="hover:text-yellow-400 transition">تواصل معنا</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-xl font-bold text-[#d0b16b] mb-4">تابعنا</h4>
+        <div class="flex gap-4">
+          <a href="https://www.facebook.com/share/1722sjEFjD" class="hover:text-yellow-400 transition"><i class="fab fa-facebook fa-lg"></i></a>
+          <a href="www.linkedin.com/in/emad-hassan-14262b2b2" class="hover:text-yellow-400 transition"><i class="fab fa-linkedin fa-lg"></i></a>
+          <a href="https://emadhassan-123.github.io" class="hover:text-yellow-400 transition"><i class="fab fa-github fa-lg"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-700 mt-8 pt-4 text-center text-gray-500 text-sm">&copy; 2025 جميع الحقوق محفوظة لموقع <span class="text-[#d0b16b]">مساحتي</span> | تطوير <a href="https://github.com/emadah" class="hover:text-yellow-400 transition">عماد حسان</a></div>
+  </footer>
+
+  <!-- ===== Optimized Scripts (inline for easy deployment) ===== -->
+  <script>
+  /**
+   * main-optimized.js - inlined
+   * تحسين تحميل السكربتات، تحريكات أخف، lazy-load للمحتوى الديناميكي، ودعم reduced-motion
+   */
+
+  (function () {
+    // Safety: if GSAP not yet loaded, wait until it is (scripts are deferred)
+    function whenGSAPReady(cb) {
+      if (window.gsap && window.gsap.registerPlugin) return cb();
+      // Poll briefly (GSAP deferred should load shortly)
+      const maxChecks = 50; let checks = 0;
+      const id = setInterval(() => {
+        checks++;
+        if (window.gsap && window.gsap.registerPlugin) {
+          clearInterval(id); cb();
+        } else if (checks > maxChecks) {
+          clearInterval(id);
+          // degrade gracefully: still run non-gsap parts
+          cb(true);
+        }
+      }, 40);
+    }
+
+    // Utility: detect prefers-reduced-motion or low-power devices
+    const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const lowPowerDevice = (navigator.deviceMemory && navigator.deviceMemory <= 1) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
+
+    // Progressive background upgrade (small -> large) using idle callback when available
+    function progressiveBackground() {
+      const el = document.getElementById('starsBg');
+      if (!el) return;
+      const small = 'public/images/photo-1462331940025-496dfbfc7564_small.webp';
+      const large = 'public/images/photo-1462331940025-496dfbfc7564.webp';
+      // already set small in markup; upgrade when idle or after short timeout
+      function loadLarge() {
+        const img = new Image();
+        img.src = large;
+        img.onload = () => { el.style.backgroundImage = 'url(' + large + ')'; };
+      }
+      if ('requestIdleCallback' in window) requestIdleCallback(loadLarge, { timeout: 1500 });
+      else setTimeout(loadLarge, 1500);
+    }
+
+    // Lazy-load dynamic UI modules (categories, resources) only when the sections enter viewport
+    function lazyLoadModules() {
+      const blogSection = document.getElementById('blog-section');
+      const resourcesSection = document.getElementById('resources-section');
+      const projectsList = document.getElementById('projects-list');
+
+      const obsOpts = { root: null, rootMargin: '0px', threshold: 0.18 };
+
+      if (blogSection) {
+        const blogObs = new IntersectionObserver((entries, obs) => {
+          if (entries[0].isIntersecting) {
+            // import categories-bar module (if present) - fallback to no-op if fail
+            import('./shared/js/ui/categories-bar.js').then(m => m.initCategoriesBar('categories-bar', 'latest-posts')).catch(() => {});
+            obs.disconnect();
+          }
+        }, obsOpts);
+        blogObs.observe(blogSection);
+      }
+
+      if (resourcesSection) {
+        const resObs = new IntersectionObserver((entries, obs) => {
+          if (entries[0].isIntersecting) {
+            import('./shared/js/ui/resourcesSidebar.js').then(m => m.renderLatestResources('resources-list', 5)).catch(() => {});
+            obs.disconnect();
+          }
+        }, obsOpts);
+        resObs.observe(resourcesSection);
+      }
+
+      if (projectsList) {
+        const projObs = new IntersectionObserver((entries, obs) => {
+          if (entries[0].isIntersecting) {
+            // fetch GitHub projects lazily (only once)
+            fetchGitHubProjects('projects-list', 'EMADHASSAN-123', 6);
+            obs.disconnect();
+          }
+        }, obsOpts);
+        projObs.observe(projectsList);
+      }
+    }
+
+    function fetchGitHubProjects(containerId = 'projects-list', username = 'EMADHASSAN-123', limit = 6) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      // show temporary loader (light)
+      container.innerHTML = '<p style="color:var(--muted);">جاري تحميل المشاريع...</p>';
+      // small timeout to allow UI to remain responsive
+      setTimeout(() => {
+        fetch(`https://api.github.com/users/${username}/repos?sort=updated`)
+          .then(resp => {
+            if (!resp.ok) throw new Error('GitHub API failed');
+            return resp.json();
+          })
+          .then(repos => {
+            container.innerHTML = '';
+            repos.slice(0, limit).forEach((repo, i) => {
+              const card = document.createElement('article');
+              card.className = 'bg-[rgba(255,255,255,0.05)] backdrop-blur-lg border border-[#d0b16b]/30 rounded-2xl shadow-lg p-6';
+              // sanitize simple fields
+              const name = (repo.name || 'مشروع').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+              const desc = (repo.description || 'لا يوجد وصف').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+              const lang = repo.language || 'عام';
+              card.innerHTML = `
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+                  <h3 style="color:var(--accent);margin:0;font-weight:700">${name}</h3>
+                  <span style="background:rgba(208,177,107,.12);color:var(--accent);padding:.25rem .5rem;border-radius:999px;font-size:.8rem">${lang}</span>
+                </div>
+                <p style="color:#c9d3dd;margin:0 0 .75rem">${desc}</p>
+                <a href="${repo.html_url}" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none">عرض المشروع <i class="fa-solid fa-arrow-up-right-from-square" style="margin-inline-start:.5rem"></i></a>
+              `;
+              container.appendChild(card);
+
+              // lightweight reveal: avoid heavy stagger if reducedMotion or lowPowerDevice
+              if (!reducedMotion && !lowPowerDevice && window.gsap) {
+                gsap.from(card, { opacity: 0, y: 30, duration: 0.7, delay: i * 0.06, ease: 'power3.out' });
+              } else {
+                card.style.opacity = '1';
+                card.style.transform = 'none';
+              }
+            });
+          })
+          .catch(err => {
+            container.innerHTML = '<p style="color:#ff8b8b">فشل تحميل المشاريع من GitHub</p>';
+            console.error('fetchGitHubProjects error', err);
+          });
+      }, 80);
+    }
+
+    // Hero animation: optimized
+    function initHeroAnimation(degraded = false) {
+      const text = document.getElementById('masahaText');
+      if (!text) return;
+
+      // compute length only if supported
+      let length = 0;
+      try { length = text.getComputedTextLength(); } catch (e) { length = 800; }
+
+      // set initial dash array only if supported and not degraded
+      if (!degraded && 'style' in text) {
+        text.style.strokeDasharray = length;
+        text.style.strokeDashoffset = length;
+      }
+
+      // If user prefers reduced motion or lowPowerDevice, show static or simpler animation
+      if (reducedMotion || lowPowerDevice) {
+        // single slow hue-rotate CSS fallback
+        text.style.transition = 'filter 2s linear';
+        text.style.filter = 'hue-rotate(0deg)';
+        setTimeout(() => text.style.filter = 'hue-rotate(40deg)', 500);
+        return;
+      }
+
+      // Use gsap if available, else degrade gracefully
+      if (window.gsap && !degraded) {
+        gsap.to(text, {
+          strokeDashoffset: 0,
+          duration: 2.2,
+          ease: "power2.out",
+          onUpdate() {
+            try {
+              const progress = gsap.getProperty(text, 'strokeDashoffset') / length;
+              const wave = Math.sin(progress * Math.PI * 8) * 10;
+              const depth = Math.cos(progress * Math.PI * 4) * 6;
+              // keep y numeric and safe
+              text.setAttribute('y', 220 + wave + depth);
+              // hue rotation via HSL stroke (works in modern browsers)
+              text.setAttribute('stroke', `hsl(${Math.round(progress * 360)}, 80%, 50%)`);
+            } catch (e) { /* ignore DOM errors */ }
+          },
+          onComplete() {
+            // gentle looping animation (low cost)
+            gsap.to(text, { y: '+=4', repeat: -1, yoyo: true, duration: 1.2, ease: 'sine.inOut' });
+            // create particles but limit count strongly and create via document fragment
+            const svg = document.querySelector('.logo-svg');
+            if (!svg) return;
+            const frag = document.createDocumentFragment();
+            const particleCount = Math.min(20, lowPowerDevice ? 8 : 20); // reduced number
+            for (let i = 0; i < particleCount; i++) {
+              const particle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+              const r = 2 + Math.random() * 3;
+              particle.setAttribute('r', r);
+              particle.setAttribute('fill', '#d0b16b');
+              frag.appendChild(particle);
+            }
+            svg.appendChild(frag);
+            // animate particles in small batches to avoid jank
+            const particles = svg.querySelectorAll('circle');
+            particles.forEach((p, i) => {
+              const dx = (Math.random() - 0.5) * 240;
+              const dy = (Math.random() - 0.5) * 160;
+              const dur = 1 + Math.random();
+              gsap.fromTo(p, { cx: 600, cy: 210, opacity: 1 }, {
+                cx: 600 + dx,
+                cy: 210 + dy,
+                opacity: 0,
+                duration: dur,
+                delay: i * 0.02,
+                ease: 'power2.out',
+                onComplete: () => p.remove()
+              });
+            });
+          }
+        });
+        // initial stagger for icon boxes
+        gsap.from('.icon-box', { y: 30, stagger: 0.12, duration: 1.1, ease: 'power3.out', delay: 1.6 });
+      } else {
+        // degrade: simple CSS transition or small JS tween
+        text.style.transition = 'opacity .9s ease';
+        text.style.opacity = '1';
+      }
+    }
+
+    // Feature cards reveal using ScrollTrigger if available; fallback to IntersectionObserver
+    function initFeatureReveal() {
+      const cards = document.querySelectorAll('.feature-card');
+      if (cards.length === 0) return;
+
+      if (window.gsap && window.gsap.registerPlugin && window.ScrollTrigger) {
+        // use ScrollTrigger with once:true to reduce listeners
+        cards.forEach((card, i) => {
+          gsap.fromTo(card, { opacity: 0, y: 40 }, {
+            opacity: 1, y: 0, duration: 0.55, ease: 'power3.out', delay: i * 0.08,
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+              once: true
+            }
+          });
+          // hover glow - only if not reduced motion
+          const icon = card.querySelector('.icon-circle');
+          if (icon && !reducedMotion) {
+            card.addEventListener('mouseenter', () => { gsap.to(icon, { scale: 1.12, boxShadow: "0 0 22px rgba(208,177,107,0.7)", duration: 0.28 }); });
+            card.addEventListener('mouseleave', () => { gsap.to(icon, { scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)", duration: 0.28 }); });
+          }
+        });
+      } else {
+        // fallback: IntersectionObserver simple reveal
+        const io = new IntersectionObserver((entries, obs) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              e.target.style.transition = 'opacity .45s ease, transform .45s ease';
+              e.target.style.opacity = '1';
+              e.target.style.transform = 'translateY(0)';
+              obs.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.18 });
+        cards.forEach(c => {
+          c.style.opacity = 0;
+          c.style.transform = 'translateY(28px)';
+          io.observe(c);
+        });
+      }
+    }
+
+    // Initialize lucide icons after DOM and library loaded
+    function initLucide() {
+      try {
+        if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
+      } catch (e) { /* ignore */ }
+    }
+
+    // Small performance helper: defer heavy init until idle (where possible)
+    function idleTask(fn) {
+      if ('requestIdleCallback' in window) requestIdleCallback(fn, { timeout: 1200 });
+      else setTimeout(fn, 600);
+    }
+
+    // Initialize everything orchestrated
+    function initAll() {
+      progressiveBackground();
+      initLucide();
+
+      whenGSAPReady((degraded) => {
+        // hero animation: run on window load to ensure fonts and layout are ready
+        window.addEventListener('load', () => {
+          initHeroAnimation(degraded);
+        });
+
+        // feature reveal
+        idleTask(() => { initFeatureReveal(); });
+
+        // lazy-load modules (categories, resources, projects)
+        lazyLoadModules();
+      });
+
+      // init site header module if exists (header.js)
+      
+
+      // accessibility: reduce motion toggle support (if you want to add UI)
+      // (no UI here; respects user's system preference)
+    }
+
+    // Kickoff when DOM is ready (ensures minimal render-block)
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+      initAll();
+    }
+
+  })();
+  </script>
+
+</body>
+</html>

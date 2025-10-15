@@ -1,15 +1,57 @@
-// assets/js/ui/posts-render.js
 import { escapeHtml, escapeAttr, guessExcerpt, formatDate } from "./helpers.js";
 import { APP_CONFIG } from "../../../admin/assets/js/config/appConfig.js";
 
 /**
- * عرض بطاقات التدوينات بتصميم حديث وبسيط
+ * عرض بطاقات التدوينات بتصميم حديث مع عرض هيكل تحميل مؤقت (Skeleton)
  * @param {HTMLElement} rootEl - العنصر الجذري
  * @param {Array} posts - مصفوفة التدوينات
  * @param {Object} options - خيارات إضافية (onRead, linkTemplate)
  */
 export function renderPostsCards(rootEl, posts = [], { onRead, linkTemplate } = {}) {
   if (!rootEl) return;
+
+  // 🦴 إنشاء هيكل تحميل مؤقت Skeleton قبل عرض البوستات الحقيقية
+  const showSkeleton = (count = 4) => {
+    rootEl.innerHTML = "";
+    const frag = document.createDocumentFragment();
+
+    for (let i = 0; i < count; i++) {
+      const skeleton = document.createElement("article");
+      skeleton.className = `
+        animate-pulse rounded-2xl p-6 bg-white/5 border border-[#d0b16b]/10 
+        backdrop-blur-sm shadow-sm flex flex-col justify-between
+      `;
+      skeleton.innerHTML = `
+        <div>
+          <div class="h-5 w-2/3 bg-[#d0b16b]/30 rounded mb-4"></div>
+          <div class="h-3 w-full bg-gray-700/40 rounded mb-2"></div>
+          <div class="h-3 w-5/6 bg-gray-700/40 rounded mb-2"></div>
+          <div class="h-3 w-4/6 bg-gray-700/40 rounded"></div>
+        </div>
+        <div class="flex justify-between items-center mt-auto pt-4">
+          <div class="h-3 w-20 bg-gray-700/40 rounded"></div>
+          <div class="h-6 w-24 bg-[#d0b16b]/30 rounded-full"></div>
+        </div>
+      `;
+      frag.appendChild(skeleton);
+    }
+
+    rootEl.appendChild(frag);
+  };
+
+  // 🔹 إظهار skeleton فورًا حتى يتم جلب التدوينات
+  showSkeleton();
+
+  // ⏳ تأخير بسيط لمحاكاة وقت الجلب (في الحالة الحقيقية استخدمه بعد جلب البيانات)
+  setTimeout(() => {
+    renderRealPosts(rootEl, posts, { onRead, linkTemplate });
+  }, 400); // يمكنك تقليلها أو ربطها بزمن الجلب الحقيقي
+}
+
+/**
+ * 🔸 عرض البوستات الفعلية بعد انتهاء التحميل
+ */
+function renderRealPosts(rootEl, posts = [], { onRead, linkTemplate } = {}) {
   rootEl.innerHTML = "";
 
   if (!Array.isArray(posts) || posts.length === 0) {
@@ -58,18 +100,10 @@ export function renderPostsCards(rootEl, posts = [], { onRead, linkTemplate } = 
       </div>
     `;
 
-    // دعم النقر على البطاقة بالكامل
-    card.addEventListener("click", () => {
-      if (onRead) onRead(id, post);
-      else window.location.href = postLink;
-    });
-
-    // دعم لوحة المفاتيح
+    // دعم النقر ولوحة المفاتيح
+    card.addEventListener("click", () => (onRead ? onRead(id, post) : (window.location.href = postLink)));
     card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        if (onRead) onRead(id, post);
-        else window.location.href = postLink;
-      }
+      if (e.key === "Enter") (onRead ? onRead(id, post) : (window.location.href = postLink));
     });
 
     frag.appendChild(card);
@@ -77,14 +111,14 @@ export function renderPostsCards(rootEl, posts = [], { onRead, linkTemplate } = 
 
   rootEl.appendChild(frag);
 
-  // ✨ تأثير دخول أنيق باستخدام GSAP (اختياري)
+  // ✨ تأثير دخول أنيق باستخدام GSAP
   if (window.gsap) {
     gsap.from(rootEl.children, {
       opacity: 0,
-      y: 15,
-      duration: 0.4,
-      stagger: 0.05,
-      ease: "power2.out"
+      y: 20,
+      duration: 0.5,
+      stagger: 0.07,
+      ease: "power2.out",
     });
   }
 }

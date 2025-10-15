@@ -1,10 +1,39 @@
-// shared/js/ui/resources.js
 import { getResources } from "../../../admin/assets/js/api/resourcesApi.js";
 import { listCategoriesCached } from "../cach/categoriesCache.js";
+
+// 🦴 دالة لإظهار Skeleton Loader لبطاقات الموارد
+function showResourcesSkeleton(container, count = 6) {
+  container.innerHTML = "";
+  const frag = document.createDocumentFragment();
+
+  for (let i = 0; i < count; i++) {
+    const skeleton = document.createElement("div");
+    skeleton.className = `
+      animate-pulse p-6 rounded-2xl bg-gray-800/50 border border-[#d0b16b]/20
+      h-40 flex flex-col justify-between
+    `;
+
+    skeleton.innerHTML = `
+      <div class="h-6 bg-[#d0b16b]/20 rounded w-3/4 mb-3"></div>
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 bg-[#d0b16b]/20 rounded-full"></div>
+        <div class="flex-1 h-4 bg-[#d0b16b]/20 rounded"></div>
+      </div>
+      <div class="h-4 bg-[#d0b16b]/20 rounded w-1/4 self-end"></div>
+    `;
+
+    frag.appendChild(skeleton);
+  }
+
+  container.appendChild(frag);
+}
 
 export async function renderLatestResources(containerId = "resources-list", limit = 6) {
   const container = document.getElementById(containerId);
   if (!container) return;
+
+  // ✨ عرض الـ Skeleton Loader مباشرة
+  showResourcesSkeleton(container, limit);
 
   try {
     const [resources, categories] = await Promise.all([
@@ -60,6 +89,18 @@ export async function renderLatestResources(containerId = "resources-list", limi
 
       container.appendChild(card);
     });
+
+    // 🔹 تأثير دخول سلس باستخدام GSAP (اختياري)
+    if (window.gsap) {
+      gsap.from(container.children, {
+        opacity: 0,
+        y: 15,
+        duration: 0.4,
+        stagger: 0.05,
+        ease: "power2.out"
+      });
+    }
+
   } catch (err) {
     console.error("فشل تحميل الموارد:", err);
     container.innerHTML =

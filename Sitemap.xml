@@ -2,9 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <!-- الصفحة الرئيسية -->
-  <url>
-    <loc>https://yourwebsite.com/index.html</loc>
-    <lastmod>2025-10-02</lastmod>
+   <url>
+    <loc>https://emadhassan-123.github.io/digital_space/index.html</loc>
+    <lastmod>2025-10-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -17,25 +17,26 @@
     <priority>0.9</priority>
   </url>
 
-  <!-- صفحة عرض البوست -->
+   <!-- صفحة المقالات -->
   <url>
-    <loc>https://yourwebsite.com/public/page/post.html</loc>
-    <lastmod>2025-10-02</lastmod>
-    <changefreq>daily</changefreq>
+    <loc>https://emadhassan-123.github.io/digital_space/public/page/post.html</loc>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
-  <!-- صفحة المكتبة -->
+   <!-- صفحة الموارد -->
   <url>
-    <loc>https://yourwebsite.com/public/page/resources.html</loc>
-    <lastmod>2025-10-02</lastmod>
+    <loc>https://emadhassan-123.github.io/digital_space/public/page/resources.html</loc>
+    <lastmod>2025-10-15</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
+
 
   <!-- صفحة الملف الشخصي -->
   <url>
-    <loc>https://yourwebsite.com/public/page/profile.html</loc>
+    <loc>https://emadhassan-123.github.io/digital_space/public/page/profile.html</loc>
     <lastmod>2025-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -43,7 +44,7 @@
 
   <!-- صفحة تسجيل الدخول -->
   <url>
-    <loc>https://yourwebsite.com/public/page/login.html</loc>
+    <loc>https://emadhassan-123.github.io/digital_space/public/page/login.html</loc>
     <lastmod>2025-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -51,7 +52,7 @@
 
   <!-- صفحة إنشاء حساب -->
   <url>
-    <loc>https://yourwebsite.com/public/page/signup.html</loc>
+    <loc>https://emadhassan-123.github.io/digital_space/public/page/signup.html</loc>
     <lastmod>2025-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -59,7 +60,7 @@
 
   <!-- صفحة الإدارة (عادة محجوبة عن محركات البحث) -->
   <url>
-    <loc>https://yourwebsite.com/admin/index.html</loc>
+    <loc>https://emadhassan-123.github.io/digital_space/admin/index.html</loc>
     <lastmod>2025-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>مساحة — مدونة رقمية لتدوين المعرفة ومشاركة الموارد</title>
   <meta name="description"
     content="مساحة هي مدونة رقمية شخصية لتدوين المعرفة العلمية والمكتسبة بطرق تفاعلية وباسلوب مبتكر, شرح المفاهيم التقنية، ومشاركة الموارد بطريقة بصرية ممتعة. اكتشف مقالات، أدوات، ومشاريع رقمية.">
@@ -388,7 +389,7 @@
   <section class="about-masaha relative z-10 py-24 px-6 backdrop-blur-lg rounded-3xl max-w-7xl mx-auto my-16">
     <div class="container mx-auto flex flex-col lg:flex-row items-center gap-12">
        <div class="flex-shrink-0">
-        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80"
+        <img src="/public/images/about.webp?auto=format&fit=crop&w=400&q=80" loading="lazy"
           alt="مساحة" class="rounded-3xl shadow-2xl w-72 lg:w-96 object-cover">
       </div>
       <div class="flex-1 text-center lg:text-left space-y-6">
@@ -415,11 +416,19 @@
   </section>
 
   <section class="projects-section py-24 relative z-10">
-    <div class="container mx-auto px-6">
-      <h2 class="text-4xl font-bold text-center mb-12 text-yellow-500">مشاريع مساحة على GitHub</h2>
-      <div id="projects-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  <div class="container mx-auto px-6">
+    <h2 class="text-4xl font-bold text-center mb-12 text-yellow-500">مشاريع مساحة على GitHub</h2>
+
+    <!-- حاوية البطاقات -->
+    <div id="projects-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Skeleton Loader أثناء التحميل -->
+      <div class="animate-pulse bg-gray-700 h-52 rounded-2xl"></div>
+      <div class="animate-pulse bg-gray-700 h-52 rounded-2xl"></div>
+      <div class="animate-pulse bg-gray-700 h-52 rounded-2xl"></div>
     </div>
-  </section>
+  </div>
+</section>
+
 
   <footer class=" text-gray-200 pt-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -568,75 +577,81 @@
       initCategoriesBar("categories-bar", "latest-posts");
       renderLatestResources("resources-list", 5);
     });
+     </script>
+<script>
+const languageIcons = {
+  "JavaScript": "fa-brands fa-js",
+  "HTML": "fa-brands fa-html5",
+  "CSS": "fa-brands fa-css3-alt",
+  "TypeScript": "fa-brands fa-js",
+  "Java": "fa-brands fa-java",
+  "C#": "fa-solid fa-code",
+  "PHP": "fa-brands fa-php",
+  "Ruby": "fa-brands fa-ruby",
+  "Go": "fa-brands fa-golang"
+};
 
-    const languageIcons = {
-      "JavaScript": "fa-brands fa-js",
-      "HTML": "fa-brands fa-html5",
-      "CSS": "fa-brands fa-css3-alt",
-      "TypeScript": "fa-brands fa-js",
-      "Java": "fa-brands fa-java",
-      "C#": "fa-solid fa-code",
-      "PHP": "fa-brands fa-php",
-      "Ruby": "fa-brands fa-ruby",
-      "Go": "fa-brands fa-golang"
-    };
+async function renderGitHubProjects(containerId = "projects-list", username = "EMADHASSAN-123", limit = 6) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
 
-    async function renderGitHubProjects(containerId = "projects-list", username = "YOUR_GITHUB_USERNAME", limit = 6) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
+  try {
+    // جلب المستودعات مع الحد الأقصى مباشرة
+    const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=${limit}`);
+    const repos = await response.json();
 
-      try {
-        const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated`);
-        const repos = await response.json();
+    container.innerHTML = ""; // تفريغ الحاوية من Skeleton Loader
 
-        container.innerHTML = ""; // تفريغ الحاوية
+    repos.forEach((repo, index) => {
+      const card = document.createElement("article");
+      card.className = `
+        project-card
+        bg-[rgba(255,255,255,0.05)] backdrop-blur-lg border border-[#d0b16b]/30
+        rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transition transform duration-300
+        cursor-pointer overflow-hidden p-4 sm:p-6 flex flex-col justify-between max-w-full min-h-[250px]
+      `;
 
-        repos.slice(0, limit).forEach((repo, index) => {
-          const card = document.createElement("article");
-          card.className = `
-          bg-[rgba(255,255,255,0.05)] backdrop-blur-lg border border-[#d0b16b]/30
-          rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transition transform duration-300 cursor-pointer overflow-hidden p-6 flex flex-col justify-between
-        `;
+      const iconClass = languageIcons[repo.language] || "fa-solid fa-code";
 
-          const iconClass = languageIcons[repo.language] || "fa-solid fa-code";
+      card.innerHTML = `
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg sm:text-xl font-bold text-[#d0b16b] truncate">${repo.name}</h3>
+          <span class="text-xs bg-[#d0b16b]/20 text-[#d0b16b] px-2 py-0.5 rounded-full ml-2">${repo.language || "عام"}</span>
+        </div>
+        <i class="${iconClass} text-[#d0b16b] text-2xl mb-3"></i>
+        <p class="text-gray-300 text-sm mb-4 leading-relaxed line-clamp-3">${repo.description || "لا يوجد وصف"}</p>
+        <a href="${repo.html_url}" target="_blank" class="inline-flex items-center gap-2 text-[#d0b16b] hover:text-yellow-300 font-semibold transition">
+          عرض المشروع
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </a>
+      `;
 
-          card.innerHTML = `
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-xl font-bold text-[#d0b16b]">${repo.name}</h3>
-            <span class="text-xs bg-[#d0b16b]/20 text-[#d0b16b] px-2 py-0.5 rounded-full ml-2">${repo.language || "عام"}</span>
-          </div>
-          <i class="${iconClass} text-[#d0b16b] text-2xl mb-3"></i>
-          <p class="text-gray-300 text-sm mb-4 leading-relaxed">${repo.description || "لا يوجد وصف"}</p>
-          <a href="${repo.html_url}" target="_blank" class="inline-flex items-center gap-2 text-[#d0b16b] hover:text-yellow-300 font-semibold transition">
-            عرض المشروع
-            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          </a>
-        `;
-          container.appendChild(card);
+      container.appendChild(card);
+    });
 
-          // تأثير GSAP عند ظهور البطاقة (خفيف)
-          gsap.from(card, {
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-            },
-            opacity: 0,
-            y: 30,
-            duration: 0.6,
-            delay: index * 0.08,
-            ease: "power3.out"
-          });
-        });
+    // تأثير GSAP عند ظهور البطاقات مع Batch لتحسين الأداء
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.batch(".project-card", {
+      interval: 0.1,
+      batchMax: 3,
+      onEnter: batch => gsap.from(batch, {
+        opacity: 0,
+        y: 30,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: "power3.out"
+      })
+    });
 
-      } catch (err) {
-        console.error("فشل تحميل مشاريع GitHub:", err);
-        container.innerHTML = `<p class="text-red-500 text-center">فشل تحميل المشاريع من GitHub</p>`;
-      }
-    }
+  } catch (err) {
+    console.error("فشل تحميل مشاريع GitHub:", err);
+    container.innerHTML = `<p class="text-red-500 text-center">فشل تحميل المشاريع من GitHub</p>`;
+  }
+}
 
-    // استدعاء الدالة
-    renderGitHubProjects("projects-list", "EMADHASSAN-123", 6); // ضع اسم حسابك
-  </script>
+// استدعاء الدالة
+renderGitHubProjects("projects-list", "EMADHASSAN-123", 6);
+</script>
   <script type="module">
     import { Header } from './public/assets/js/header.js';
     document.addEventListener('DOMContentLoaded', () => { Header.init(); });

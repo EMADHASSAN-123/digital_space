@@ -163,7 +163,7 @@ function initTinyMCE() {
   tinymce.init({
     selector: "#postContent",
     height: 400,
-    toolbar: "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | code | uploadImage | gsap | mindmap | accordion | tabs | cta",
+    toolbar: "undo redo | code | formatselect | h2 h3 | fontselect fontsizeselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | code | uploadImage |",
     menubar: false,
     content_style: "body { color: white; background-color: #cad0d7ff; font-family: sans-serif; }",
     license_key: "gpl",

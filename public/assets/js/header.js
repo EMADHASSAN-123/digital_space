@@ -107,21 +107,32 @@ export const Header = (() => {
     if (!placeholder) return;
 
     placeholder.innerHTML = user
-      ? `
-        <button id="user-btn" aria-haspopup="true" aria-expanded="false" class="flex items-center gap-2 p-2 rounded-xl hover:bg-gray-700 transition">
-          <span class="text-sm">${user.email ?? "حسابي"}</span>
-          <i class="fa-solid fa-user text-gray-200"></i>
-        </button>
-        <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-[#1f1f1f]/90 border border-gray-700 rounded-xl shadow-lg hidden backdrop-blur-md">
-          <a href="${APP_CONFIG.PROFILE_PAGE}?id=${user.id}" class="block px-4 py-2 text-sm hover:bg-gray-700 rounded-lg">الملف الشخصي</a>
-          <button id="logout-btn" class="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 rounded-lg">تسجيل الخروج</button>
+  ? `
+    <div class="relative">
+      <button id="user-btn" aria-haspopup="true" aria-expanded="false"
+        class="flex items-center gap-2 p-2 rounded-xl hover:bg-gray-700 transition">
+        
+        <div class="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-purple-600 text-white font-bold text-sm">
+          ${user.email ? user.email.charAt(0).toUpperCase() : "?"}
         </div>
-      `
-      : `
-        <a href="${APP_CONFIG.LOGIN_PAGE}" class="px-4 py-2 hover:bg-gray-700 rounded-xl text-sm">تسجيل الدخول</a>
-        <a href="${APP_CONFIG.SINGUp_PAGE}" class="px-4 py-2 hover:bg-gray-700 rounded-xl text-sm">إنشاء حساب</a>
-      `;
+        
+        <span class="hidden sm:inline text-sm">${user.email ? user.email.split("@")[0] : "حسابي"}</span>
+      </button>
 
+      <div id="user-dropdown"
+        class="absolute right-0 mt-2 mr-5 w-48 bg-[#1f1f1f]/90 border border-gray-700 rounded-xl shadow-lg hidden backdrop-blur-md sm:right-0 translate-x-[-10%] sm:translate-x-0 z-50">
+        <a href="${APP_CONFIG.PROFILE_PAGE}?id=${user.id}"
+          class="block px-4 py-2 text-sm hover:bg-gray-700 rounded-lg">الملف الشخصي</a>
+        <button id="logout-btn"
+          class="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 rounded-lg">تسجيل الخروج</button>
+      </div>
+    </div>
+  `
+  : `
+    <a href="${APP_CONFIG.LOGIN_PAGE}" class="px-4 py-2 hover:bg-gray-700 rounded-xl text-sm">تسجيل الدخول</a>
+    <a href="${APP_CONFIG.SINGUp_PAGE}" class="px-4 py-2 hover:bg-gray-700 rounded-xl text-sm">إنشاء حساب</a>
+  `;
+  
     bindUserEvents();
   }
 

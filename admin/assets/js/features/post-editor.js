@@ -162,11 +162,84 @@ function initTinyMCE() {
 
   tinymce.init({
     selector: "#postContent",
-    height: 400,
-    toolbar: "undo redo | code | formatselect | h2 h3 | fontselect fontsizeselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | code | uploadImage |",
-    menubar: false,
-    content_style: "body { color: white; background-color: #cad0d7ff; font-family: sans-serif; }",
+    height: 500,
+    menubar: "file edit view insert format tools table help",
     license_key: "gpl",
+
+    // ✅ الأدوات الرئيسية
+    toolbar:
+      "undo redo | formatselect | fontselect fontsizeselect | bold italic underline forecolor backcolor | alignleft aligncenter alignright | bullist numlist | link image | code | uploadImage | gsap | mindmap | accordion | tabs | cta",
+
+    // ✅ السماح باستخدام أنماط خاصة
+    content_style: `
+      body {
+        direction: rtl;
+        text-align: right;
+        color: #1e1e1e;
+        background-color: #f9fafb;
+        font-family: 'Cairo', sans-serif;
+        font-size: 16px;
+        line-height: 1.8;
+        padding: 15px;
+      }
+        p { margin-top: 0; margin-bottom: 1em; }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.5em;
+        margin-bottom: 0.7em;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+        ul, ol { margin-right: 1.5em; }
+      figure, img, iframe, .cta-box {
+        display: block;
+        margin: 1.5em auto;
+        max-width: 100%;
+        border-radius: 8px;
+      }
+      blockquote {
+        border-right: 4px solid #d0b16b;
+        padding: 0.5em 1em;
+        background: #fff8e1;
+        margin: 1em 0;
+        border-radius: 6px;
+      }
+    `,
+
+    // ✅ خيارات العناوين والخطوط
+    style_formats: [
+      { title: "العنوان الرئيسي (H1)", block: "h1" },
+      { title: "العنوان الفرعي (H2)", block: "h2" },
+      { title: "العنوان الثانوي (H3)", block: "h3" },
+      { title: "العنوان الرابع (H4)", block: "h4" },
+      { title: "فقرة نصية", block: "p" },
+      { title: "اقتباس", block: "blockquote" },
+      { title: "كود برمجي", block: "pre" }
+    ],
+
+    // ✅ خطوط إضافية
+    font_formats:
+      "Cairo='Cairo', sans-serif;" +
+      "Tajawal='Tajawal', sans-serif;" +
+      "Amiri='Amiri', serif;" +
+      "Roboto='Roboto', sans-serif;" +
+      "Arial=arial,helvetica,sans-serif;" +
+      "Times New Roman=times new roman,times;",
+
+    // ✅ أحجام النصوص المسموحة
+    fontsize_formats: "12px 14px 16px 18px 20px 24px 28px 32px",
+
+    // ✅ الألوان المخصصة
+    color_map: [
+      "000000", "أسود",
+      "FFFFFF", "أبيض",
+      "d0b16b", "ذهبي",
+      "161616", "أسود داكن",
+      "ff0000", "أحمر",
+      "1d4ed8", "أزرق",
+      "16a34a", "أخضر",
+      "ca8a04", "برتقالي"
+    ],
+
     setup(editor) {
       editor.on("change keyup paste", () => setDirty(true));
 

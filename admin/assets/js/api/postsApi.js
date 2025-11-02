@@ -183,9 +183,10 @@ export async function listCategories() {
 
 export async function createCategory(payload = {}) {
   if (!payload?.name) throw new Error("createCategory: invalid payload");
-
+ 
   const url = fnBase("create-category");
   const headers = await buildHeaders({ requireAuth: true });
+  console.log("🔗 createCategory URL:", url);
 
   const body = await makeRequest(url, {
     method: "POST",

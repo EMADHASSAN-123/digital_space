@@ -58,7 +58,6 @@ export async function fetchComments( { postId, page = 1, per = 10, status = null
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        // 👇 أضف هذا السطر المهم
         "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
       },
     }
@@ -147,6 +146,7 @@ export async function deleteComment({ id, commentEl }) {
  * Requires admin privileges on server side (Edge Function checks isAdmin).
  * returns { comment }
  */
+
 export async function adminUpdateStatus({ id, action = null, status = null } = {}) {
   if (!id) throw new Error('id is required');
   const body = { id };

@@ -6,7 +6,7 @@ export function initCategoriesFeature() {
   const categoriesList = section.querySelector("#categoriesList");
   const input = section.querySelector("input[type='text']");
   const addBtn = section.querySelector("button");
-
+ 
   // عرض الفئات
   async function renderCategories() {
     categoriesList.innerHTML = `<li class="text-surface-light">جارٍ التحميل...</li>`;

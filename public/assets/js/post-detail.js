@@ -38,7 +38,7 @@ async function displayPost(post) {
     <div class="flex flex-col sm:flex-row sm:justify-between gap-2 mb-4 text-gray-500 dark:text-gray-400 text-sm items-start sm:items-center">
       <div class="flex items-center gap-2">
         <i class="fa-solid fa-user text-gold"></i>
-        <span>المؤلف: ${escapeHtml(post.full_name || "غير معروف")}</span>
+        <span>المؤلف: ${escapeHtml(post.profiles.full_name || "غير معروف")}</span>
       </div>
       <div class="flex items-center gap-2">
         <i class="fa-solid fa-tags text-green-500"></i>

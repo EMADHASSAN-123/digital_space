@@ -17,7 +17,7 @@ export const Header = (() => {
 
             <!-- شعار -->
             <div class="flex-shrink-0 flex items-center gap-2">
-              <span class="text-2xl font-bold text-[#d0b16b]">مساحتي</span>
+              <span class="text-2xl font-bold text-[#d0b16b]">مساحة</span>
             </div>
 
             <!-- روابط Desktop -->

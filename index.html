@@ -269,21 +269,21 @@
     <div class="icons-row flex justify-center gap-8 mt-8" aria-hidden="true" >
       <div class="icon-wrap flex flex-col items-center" title="المرونة" data-aos="zoom-in" data-aos-delay="300">
         <div class="icon-box p-4 bg-[#d0b16b]/20 rounded-full" >
-          <i data-lucide="maximize-2" class="text-[#d0b16b] w-8 h-8" ></i>
+          <i data-lucide="refresh-cw" class="text-[#d0b16b] w-8 h-8" ></i>
         </div>
         <div class="icon-label text-sm font-medium text-gray-200" >المرونة</div>
       </div>
 
       <div class="icon-wrap flex flex-col items-center" title="البساطة" data-aos="zoom-in" data-aos-delay="400">
         <div class="icon-box p-4 bg-[#d0b16b]/20 rounded-full ">
-          <i data-lucide="layout" class="text-[#d0b16b] w-8 h-8"></i>
+          <i data-lucide="layout-dashboard" class="text-[#d0b16b] w-8 h-8"></i>
         </div>
         <div class="icon-label text-sm font-medium text-gray-200">البساطة</div>
       </div>
 
       <div class="icon-wrap flex flex-col items-center" title="التقنية" data-aos="zoom-in" data-aos-delay="500">
         <div class="icon-box p-4 bg-[#d0b16b]/20 rounded-full ">
-          <i data-lucide="cpu" class="text-[#d0b16b] w-8 h-8"></i>
+          <i data-lucide="monitor" class="text-[#d0b16b] w-8 h-8"></i>
         </div>
         <div class="icon-label text-sm font-medium text-gray-200">التقنية</div>
       </div>
@@ -291,67 +291,77 @@
   </div>
 
   <!-- قسم مساحة فكرية -->
-  <section class="features-section py-24 text-white relative z-10">
-    <div class="container mx-auto px-6">
-      <h2 class="text-4xl font-bold text-center mb-16 text-yellow-500">مساحة فكرية</h2>
+<section class="features-section py-24 text-white relative z-10">
+  <div class="container mx-auto px-6">
+    <h2 class="text-4xl font-bold text-center mb-16 text-yellow-500">مساحة فكرية</h2>
 
-      <!-- استخدمت grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); -->
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
-        <!-- Note: CSS أعلاه يطبق الشبكة الديناميكية عبر .features-section .grid -->
-        <!-- بطاقة 1 -->
-        <div
-          class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center" >
-          <div
-            class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20" >
-            <i data-lucide="code-2" class="text-yellow-500 w-10 h-10" ></i>
-          </div>
-          <h3 class="text-2xl font-semibold mb-3">نشر المعرفة التقنية</h3>
-          <p class="text-gray-400 leading-relaxed">
-            مقالات وأفكار حول تصميم الويب، التطوير، وأدوات التقنية الحديثة بطريقة مبسطة وجمالية.
-          </p>
+    <div class="grid md:grid-cols-3 lg:grid-cols-3 gap-10">
+      <!-- بطاقة 1: تطوير الويب -->
+      <div class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center">
+        <div class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
+          <i data-lucide="monitor" class="text-yellow-500 w-10 h-10"></i>
         </div>
+        <h3 class="text-2xl font-semibold mb-3">تطوير الويب</h3>
+        <p class="text-gray-400 leading-relaxed">
+          سوف أعرّفك على مفاهيم تطوير الويب من الواجهة الأمامية والخلفية،
+          وأقدّم لك شروحات تساعدك على بناء مشاريعك البرمجية بخطوات واضحة وسهلة.
+        </p>
+      </div>
 
-        <!-- بطاقة 2 -->
-        <div
-          class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center">
-          <div
-            class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
-            <i data-lucide="brain" class="text-yellow-500 w-10 h-10"></i>
-          </div>
-          <h3 class="text-2xl font-semibold mb-3">مساحة للتفكير الرقمي</h3>
-          <p class="text-gray-400 leading-relaxed">
-            تأملات في كيفية بناء أفكار ومشاريع رقمية تعكس هويتنا بصدق وبساطة.
-          </p>
+      <!-- بطاقة 2: الذكاء الاصطناعي وتعلّم الآلة -->
+      <div class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center">
+        <div class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
+          <i data-lucide="brain" class="text-yellow-500 w-10 h-10"></i>
         </div>
+        <h3 class="text-2xl font-semibold mb-3">الذكاء الاصطناعي وتعلّم الآلة</h3>
+        <p class="text-gray-400 leading-relaxed">
+          سوف أعرّفك على مفاهيم الذكاء الاصطناعي وتعلّم الآلة والتعلّم العميق،
+          مع تقديم معلومات عن كيفية استخدام هذه التقنيات في حياتك العملية ومشاريعك البرمجية.
+        </p>
+      </div>
 
-        <!-- بطاقة 3 -->
-        <div
-          class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center">
-          <div
-            class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
-            <i data-lucide="book-open" class="text-yellow-500 w-10 h-10"></i>
-          </div>
-          <h3 class="text-2xl font-semibold mb-3">تجارب ودروس شخصية</h3>
-          <p class="text-gray-400 leading-relaxed">
-            تدوينات توثق الرحلة التعليمية والمهنية بكل ما فيها من نجاحات وتحديات.
-          </p>
+      <!-- بطاقة 3: شروحات عملية -->
+      <div class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center">
+        <div class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
+          <i data-lucide="code-2" class="text-yellow-500 w-10 h-10"></i>
         </div>
-
-        <!-- بطاقة 4 -->
-        <div
-          class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center">
-          <div
-            class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
-            <i data-lucide="users" class="text-yellow-500 w-10 h-10"></i>
-          </div>
-          <h3 class="text-2xl font-semibold mb-3">تفاعل ومشاركة</h3>
-          <p class="text-gray-400 leading-relaxed">
-            منصة تتيح التواصل والتعلّم المشترك في بيئة داعمة ومفتوحة للجميع.
-          </p>
-        </div>
+        <h3 class="text-2xl font-semibold mb-3">شروحات عملية</h3>
+        <p class="text-gray-400 leading-relaxed">
+          سوف أقدّم لك شروحات عملية بكود برمجي حقيقي توضح لك كيفية تنفيذ مهام
+          ووظائف محددة بطريقة مبسطة وواضحة.
+        </p>
       </div>
     </div>
-  </section>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-10 mt-10">
+      <!-- بطاقة 4: أدوات ومصادر -->
+      <div class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center">
+        <div class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
+          <i data-lucide="box" class="text-yellow-500 w-10 h-10"></i>
+        </div>
+        <h3 class="text-2xl font-semibold mb-3">أدوات ومصادر</h3>
+        <p class="text-gray-400 leading-relaxed">
+          سوف أشاركك أهم الأدوات والمصادر التي تساعدك في هندسة البرمجيات وتنظيم
+          المشاريع وتسهيل عملية التطوير والعرض التقني.
+        </p>
+      </div>
+
+      <!-- بطاقة 5: تبسيط وعرض الأفكار -->
+      <div class="feature-card bg-[#1a1a1a] p-8 rounded-2xl shadow-lg hover:shadow-yellow-500/30 transition duration-300 text-center">
+        <div class="icon-circle mx-auto mb-6 flex items-center justify-center bg-yellow-500/10 p-6 rounded-full w-20 h-20">
+          <i data-lucide="layout-dashboard" class="text-yellow-500 w-10 h-10"></i>
+        </div>
+        <h3 class="text-2xl font-semibold mb-3">تبسيط وعرض الأفكار</h3>
+        <p class="text-gray-400 leading-relaxed">
+          سوف أقدّم لك أفكارًا وأساليب تساعدك على تحويل المفاهيم التقنية إلى
+          محتوى بصري منظم وواضح يسهل فهمه وتقديمه للآخرين.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
   <!-- بقية الصفحة كما كانت... -->
   <section id="blog-section" class="relative z-10 py-24">

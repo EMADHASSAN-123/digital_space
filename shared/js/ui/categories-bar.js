@@ -46,18 +46,10 @@ export async function initCategoriesBar(barId = "categories-bar", postsRootId = 
   if (!container || !postsRoot) return;
 
   container.classList.add(
-    "flex",
-    "gap-4",
-    "overflow-x-auto",
-    "py-2",
-    "px-1",
-    "scrollbar-thin",
-    "scrollbar-thumb-[#d0b16b]/60",
-    "scrollbar-track-gray-800/40",
-    "scrollbar-thumb-rounded-full",
-    "scrollbar-track-rounded-full",
-    "whitespace-nowrap"
-  );
+  "flex",
+  "gap-4",
+ 
+);
 
   // تحسين التمرير السلس على الموبايل
   container.style.scrollBehavior = "smooth";

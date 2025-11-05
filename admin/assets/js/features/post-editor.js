@@ -173,37 +173,12 @@ function initTinyMCE() {
     // ✅ السماح باستخدام أنماط خاصة
     content_style: `
       body {
-        direction: rtl;
-        text-align: right;
-        color: #1e1e1e;
-        background-color: #f9fafb;
-        font-family: 'Cairo', 'system-ui' , sans-serif;
-        font-size: 16px;
-        line-height: 1.8;
-        padding: 15px;
-      }
-        p { margin-top: 0; margin-bottom: 1em; }
-      h1, h2, h3, h4, h5, h6 {
-        margin-top: 1.5em;
-        margin-bottom: 0.7em;
-        font-weight: 600;
-        line-height: 1.4;
-      }
-        ul, ol { margin-right: 1.5em; }
-      figure, img, iframe, .cta-box {
-        display: block;
-        margin: 1.5em auto;
-        max-width: 100%;
-        border-radius: 8px;
-      }
-      blockquote {
-        border-right: 4px solid #d0b16b;
-        padding: 0.5em 1em;
-        background: #fff8e1;
-        margin: 1em 0;
-        border-radius: 6px;
-      }
+    background-color: #f9fafb;
+    padding: 15px;
+  }
     `,
+    content_css: ["../../../../public/css/tinymce-content.css"],
+
 
     // ✅ خيارات العناوين والخطوط
     style_formats: [

@@ -177,7 +177,7 @@ function initTinyMCE() {
         text-align: right;
         color: #1e1e1e;
         background-color: #f9fafb;
-        font-family: 'Cairo', sans-serif;
+        font-family: 'Cairo', 'system-ui' , sans-serif;
         font-size: 16px;
         line-height: 1.8;
         padding: 15px;
